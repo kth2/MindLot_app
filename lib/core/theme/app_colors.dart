@@ -21,11 +21,12 @@ abstract final class AppColors {
   static const candleText = Color(0xFFF0E6D2);
   static const candleTextSoft = Color(0xFFB3A48C);
 
-  // Fortune levels (籤等)
-  static const levelGreat = Color(0xFFB3402A); // 上上/上吉
+  // Fortune levels (籤等) — handles both the coarse 上籤/中籤/下籤 scheme and
+  // finer grades (上上/上吉/中吉/中平/下下) used by other lot sets.
+  static const levelGreat = Color(0xFFB3402A); // 上籤/上上/上吉
   static const levelGood = Color(0xFFC9A227); // 中吉
-  static const levelNeutral = Color(0xFF7D8A6A); // 中平
-  static const levelCaution = Color(0xFF5C6B8A); // 下/下下
+  static const levelNeutral = Color(0xFF7D8A6A); // 中籤/中平
+  static const levelCaution = Color(0xFF5C6B8A); // 下籤/下下
 
   static Color levelColor(String level) {
     if (level.startsWith('上')) return levelGreat;

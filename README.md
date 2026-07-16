@@ -17,7 +17,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
-| 🈯 Multi-set data model: 觀音靈籤 (bundled, lots 1–10 sample) · 媽祖靈籤 · 六十甲子籤 · 黃大仙靈籤 (recognized from photos; local DBs planned) | 🚧 |
+| 🈯 Multi-set data model: 觀音靈籤 (bundled, **complete 100 lots**) · 媽祖靈籤 · 六十甲子籤 · 黃大仙靈籤 (recognized from photos; local DBs planned) | ✅ / 🚧 |
 
 ## 🚀 Getting Started
 
@@ -124,9 +124,9 @@ All lot data ships as JSON under `assets/data/`:
   "number": 1,
   "label": "第一籤",
   "sexagenary": null,          // "丁亥" for 60-jiazi systems
-  "level": "上上",              // 籤等
-  "title": "開天闢地",           // 籤題（典故名）
-  "poem": ["天開地闢結良緣", "..."],
+  "level": "上籤",              // 籤等（上籤/中籤/下籤）
+  "title": "鍾離成道",           // 籤題（典故名）
+  "poem": ["開天闢地作良緣", "..."],
   "poemTranslation": "白話淺釋…",
   "allusion": "典故說明…",
   "meaning": "解曰…",
@@ -138,24 +138,27 @@ All lot data ships as JSON under `assets/data/`:
 
 Adding a new lot system = one JSON file + one registry entry. No code changes.
 
-> ⚠️ **Data accuracy**: the bundled poems follow the widely-circulated
-> 觀音一百籤 version; individual temples use slightly different texts and
-> fortune-level assignments. Verify against your target temple's official
-> text before production release. `guanyin_100.json` currently contains lots
-> 1–10 as a reviewed sample; 11–100 follow the identical schema.
+> ⚠️ **Data accuracy**: `guanyin_100.json` now contains the **complete 100
+> lots**. Poems, fortune levels (上籤/中籤/下籤) and allusion titles come from a
+> publicly available, human-verified 觀音靈籤 dataset (converted to Traditional
+> Chinese with OpenCC); the 白話 paraphrase, allusion notes, six-aspect
+> guidance and keywords are authored for this app; `meaning` keeps the
+> traditional 解曰. Individual temples use slightly different wording — verify
+> against your target temple's official text before production release.
 
 ## 🙏 Design Principles
 
 - **Respect for tradition**: original poems, allusions, and 解曰 are presented
   faithfully; the AI interpreter is prompted to ground itself in them.
-- **Positive & encouraging**: even 下下 lots are read as reminders and turning
+- **Positive & encouraging**: even 下籤 lots are read as reminders and turning
   points — never fatalistic threats.
 - **Humble boundaries**: the app reminds users that readings are guidance, and
   to consult professionals for medical/legal/financial decisions.
 
 ## 🗺️ Roadmap
 
-- [ ] Complete 觀音靈籤 11–100; add 媽祖六十甲子籤, 黃大仙靈籤 databases
+- [x] Complete 觀音靈籤 all 100 lots
+- [ ] Add 媽祖六十甲子籤, 六十甲子籤, 黃大仙靈籤 databases
 - [ ] In-app live viewfinder with the `camera` package (guided framing overlay)
 - [ ] 擲筊 confirmation flow after drawing
 - [ ] Share a lot card as an image
@@ -167,3 +170,10 @@ Inspired by (no code copied): [westleft/fortuneStick](https://github.com/westlef
 [wickes1/wong-tai-sin](https://github.com/wickes1/wong-tai-sin),
 [huangdaxian-lingqian.skill](https://github.com/leslietong2046-ship-it/huangdaxian-lingqian.skill),
 [aws_kiro_fortune_telling_game](https://github.com/tekvinci/aws_kiro_fortune_telling_game).
+
+觀音靈籤 poems, fortune levels and allusion titles adapted from the
+publicly-shared, human-verified dataset
+[yanxinyu777-beep/guanyin-lingqian-100](https://github.com/yanxinyu777-beep/guanyin-lingqian-100)
+(converted to Traditional Chinese). The 白話 paraphrase, allusion notes,
+six-aspect guidance and keywords in `guanyin_100.json` are original to this
+project.

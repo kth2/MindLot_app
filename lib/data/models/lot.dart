@@ -26,7 +26,8 @@ class Lot {
   /// Sexagenary cycle name (甲子…癸亥) for 60-lot systems, otherwise null.
   final String? sexagenary;
 
-  /// Fortune level (籤等): 上上 / 上吉 / 中吉 / 中平 / 下下 …
+  /// Fortune level (籤等), e.g. 上籤 / 中籤 / 下籤, or finer grades such as
+  /// 上上 / 上吉 / 中吉 / 中平 / 下下 that some lot sets use.
   final String level;
 
   /// Historical allusion title (籤題), e.g. 開天闢地.
