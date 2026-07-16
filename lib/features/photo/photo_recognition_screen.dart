@@ -11,6 +11,7 @@ import '../../data/models/lot.dart';
 import '../../data/models/vision_result.dart';
 import '../../providers/providers.dart';
 import '../draw/widgets/jiao_bei_sheet.dart';
+import 'camera_capture_screen.dart';
 import 'widgets/manual_input_sheet.dart';
 
 /// 拍照辨籤 — photograph a physical lot; Vision AI identifies the set,
@@ -49,18 +50,34 @@ class _PhotoRecognitionScreenState
         maxWidth: 1600, // plenty for OCR, keeps upload small
         imageQuality: 88,
       );
-      if (file == null) return;
-      final bytes = await file.readAsBytes();
-      setState(() {
-        _imageBytes = bytes;
-        _mimeType = file.mimeType ?? 'image/jpeg';
-        _visionResult = null;
-        _resolved = null;
-        _error = null;
-      });
+      if (file != null) await _applyFile(file);
     } catch (e) {
       setState(() => _error = '無法取得照片：$e');
     }
+  }
+
+  /// Opens the in-app live viewfinder (framing overlay) to capture a photo.
+  Future<void> _openCamera() async {
+    try {
+      final XFile? file = await Navigator.of(context).push<XFile>(
+        MaterialPageRoute(builder: (_) => const CameraCaptureScreen()),
+      );
+      if (file != null && mounted) await _applyFile(file);
+    } catch (e) {
+      if (mounted) setState(() => _error = '無法開啟相機：$e');
+    }
+  }
+
+  Future<void> _applyFile(XFile file) async {
+    final bytes = await file.readAsBytes();
+    if (!mounted) return;
+    setState(() {
+      _imageBytes = bytes;
+      _mimeType = file.mimeType ?? 'image/jpeg';
+      _visionResult = null;
+      _resolved = null;
+      _error = null;
+    });
   }
 
   Future<void> _analyze() async {
@@ -249,8 +266,7 @@ class _PhotoRecognitionScreenState
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed:
-                          _analyzing ? null : () => _pickImage(ImageSource.camera),
+                      onPressed: _analyzing ? null : _openCamera,
                       icon: const Icon(Icons.photo_camera_outlined),
                       label: const Text('拍照'),
                     ),

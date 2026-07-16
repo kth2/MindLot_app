@@ -12,6 +12,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | Feature | Status |
 |---|---|
 | 📷 **Photo recognition** of physical lots (籤枝/籤詩紙) via Gemini Vision — identifies lot type, number (incl. Chinese numerals & 干支), and extracts the poem | ✅ |
+| 🎯 **In-app live viewfinder** with a framing overlay & torch (`camera` package) for guided capture, gallery picker as an alternative | ✅ |
 | 🔁 **Graceful fallbacks**: poem fuzzy-matching when the number is unreadable → AI interpretation from extracted poem when the set isn't in the local DB → manual input | ✅ |
 | 🎋 **Traditional drawing**: animated shaking cylinder with sound | ✅ |
 | 🥮 **擲筊 confirmation**: throw the moon blocks (聖筊/笑筊/陰筊) to ask the deity's approval before reading a lot — on both the draw and photo flows | ✅ |
@@ -45,7 +46,8 @@ The key can also be entered at runtime in **Settings → AI 服務** (stored onl
 
 After `flutter create .`, add:
 
-**iOS — `ios/Runner/Info.plist`**
+**iOS — `ios/Runner/Info.plist`** (the in-app viewfinder and gallery picker
+share these keys)
 ```xml
 <key>NSCameraUsageDescription</key>
 <string>拍攝籤枝或籤詩以進行辨識</string>
@@ -53,8 +55,10 @@ After `flutter create .`, add:
 <string>從相簿選擇籤詩照片以進行辨識</string>
 ```
 
-**Android** — `image_picker` needs no manifest changes on API 33+; for older
-devices the plugin handles the runtime permission flow itself.
+**Android** — the `camera` plugin requires `minSdkVersion 21`; set it in
+`android/app/build.gradle` (`defaultConfig { minSdkVersion 21 }`) if the
+generated default is lower. The CAMERA permission is merged in by the plugin;
+`image_picker` needs no manifest changes on API 33+.
 
 ### Tests
 
@@ -81,10 +85,13 @@ lib/
 │   │   ├── gemini_vision_service.dart
 │   │   ├── gemini_interpretation_service.dart
 │   │   └── prompts.dart                 # all prompt templates, tunable in one place
-│   └── audio/                    # shake sound
+│   └── audio/                    # shake + 擲筊 sounds
 ├── providers/                    # Riverpod wiring (settings, history, DI)
 └── features/                     # one folder per screen
-    ├── home/  photo/  draw/  lot/  history/  settings/
+    ├── home/
+    ├── photo/   # recognition screen + in-app CameraCaptureScreen + framing overlay
+    ├── draw/    # cylinder + 擲筊 (moon-block) ritual
+    ├── lot/  history/  settings/
 ```
 
 **State management** is classic Riverpod (`Notifier`/`AsyncNotifier`, no codegen).
@@ -186,7 +193,7 @@ source file.
 - [x] Wire up 六十甲子籤 (王爺/保生大帝廟) — shares the Mazu poem system
 - [x] Complete 黃大仙靈籤 all 100 lots — **all four registered sets now have data**
 - [x] 擲筊 confirmation flow (moon blocks: 聖筊/笑筊/陰筊) on both draw & photo flows
-- [ ] In-app live viewfinder with the `camera` package (guided framing overlay)
+- [x] In-app live viewfinder with the `camera` package (framing overlay + torch)
 - [ ] Share a lot card as an image
 - [ ] i18n (zh-TW / zh-CN / en)
 
