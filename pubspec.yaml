@@ -1,0 +1,49 @@
+name: mindlot
+description: "心籤通 MindLot — AI-powered temple divination lot companion. Photograph a real lot, draw one virtually, and receive a warm, personalized interpretation."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.7.0 <4.0.0" # Flutter 3.29+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Navigation
+  go_router: ^14.8.0
+
+  # Camera / gallery
+  image_picker: ^1.1.2
+
+  # Networking (Gemini REST API)
+  http: ^1.2.2
+
+  # Local persistence (settings, history, favorites)
+  shared_preferences: ^2.3.3
+
+  # Temple-style typography (Noto Serif TC)
+  google_fonts: ^6.2.1
+
+  # Shake sound effect
+  audioplayers: ^6.1.0
+
+  # Record ids
+  uuid: ^4.5.1
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/data/
+    - assets/sounds/
