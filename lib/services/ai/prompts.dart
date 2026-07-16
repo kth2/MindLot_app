@@ -65,6 +65,7 @@ String interpretationUserPrompt({
   required String poemTranslation,
   required String allusion,
   required String meaning,
+  String wuxing = '',
   required String? category,
   required String? question,
 }) {
@@ -75,8 +76,9 @@ String interpretationUserPrompt({
   if (title.isNotEmpty) buffer.writeln('籤題：$title');
   buffer.writeln('籤詩：$poem');
   if (poemTranslation.isNotEmpty) buffer.writeln('白話：$poemTranslation');
+  if (wuxing.isNotEmpty) buffer.writeln('五行方位：$wuxing');
   if (allusion.isNotEmpty) buffer.writeln('典故：$allusion');
-  if (meaning.isNotEmpty) buffer.writeln('解曰：$meaning');
+  if (meaning.isNotEmpty) buffer.writeln('解曰／聖意：$meaning');
   buffer.writeln();
   buffer.writeln('# 使用者的提問');
   if (category != null && category.isNotEmpty) {

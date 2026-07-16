@@ -17,7 +17,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
-| 🈯 Multi-set data model: 觀音靈籤 (bundled, **complete 100 lots**) · 媽祖靈籤 · 六十甲子籤 · 黃大仙靈籤 (recognized from photos; local DBs planned) | ✅ / 🚧 |
+| 🈯 Multi-set data model: 觀音靈籤 (**complete 100 lots**) · 媽祖六十甲子籤 (**complete 60 lots**, with 五行方位 & 聖意) · 六十甲子籤 · 黃大仙靈籤 (recognized from photos; local DBs planned) | ✅ / 🚧 |
 
 ## 🚀 Getting Started
 
@@ -129,7 +129,8 @@ All lot data ships as JSON under `assets/data/`:
   "poem": ["開天闢地作良緣", "..."],
   "poemTranslation": "白話淺釋…",
   "allusion": "典故說明…",
-  "meaning": "解曰…",
+  "meaning": "解曰…",           // for 六十甲子系統: the per-topic 聖意 items
+  "wuxing": "",                // 六十甲子系統 only, e.g. "屬金，利在秋天，宜其西方"
   "aspects": { "career": "…", "love": "…", "wealth": "…",
                "health": "…", "study": "…", "travel": "…" },
   "keywords": ["開創", "良緣"]
@@ -137,6 +138,9 @@ All lot data ships as JSON under `assets/data/`:
 ```
 
 Adding a new lot system = one JSON file + one registry entry. No code changes.
+`level` may be empty (媽祖六十甲子籤 carries no single fortune grade — its 吉凶
+lives in the poem and 聖意), and the optional `wuxing` field is rendered only
+when present.
 
 > ⚠️ **Data accuracy**: `guanyin_100.json` now contains the **complete 100
 > lots**. Poems, fortune levels (上籤/中籤/下籤) and allusion titles come from a
@@ -145,6 +149,15 @@ Adding a new lot system = one JSON file + one registry entry. No code changes.
 > guidance and keywords are authored for this app; `meaning` keeps the
 > traditional 解曰. Individual temples use slightly different wording — verify
 > against your target temple's official text before production release.
+>
+> `mazu_60.json` contains the **complete 60 lots**. Poems, 五行方位, 古人典故
+> and the per-topic 聖意 come from the public
+> [DestinyLab/lottery-poetry-sixty-jiazi](https://github.com/DestinyLab/lottery-poetry-sixty-jiazi)
+> dataset; the 白話 paraphrase, allusion notes, six-aspect guidance and
+> keywords are authored for this app. The sexagenary order follows the
+> traditional stem-grouped sequence (甲子·甲寅·甲辰·甲午·甲申·甲戌, 乙丑·乙卯…
+> — yang stems with yang branches), **not** the continuous 干支 cycle. Same
+> verify-before-release caveat applies.
 
 ## 🙏 Design Principles
 
@@ -158,7 +171,8 @@ Adding a new lot system = one JSON file + one registry entry. No code changes.
 ## 🗺️ Roadmap
 
 - [x] Complete 觀音靈籤 all 100 lots
-- [ ] Add 媽祖六十甲子籤, 六十甲子籤, 黃大仙靈籤 databases
+- [x] Complete 媽祖六十甲子籤 all 60 lots
+- [ ] Add 六十甲子籤 (王爺/保生大帝廟, shares the same poem system), 黃大仙靈籤 databases
 - [ ] In-app live viewfinder with the `camera` package (guided framing overlay)
 - [ ] 擲筊 confirmation flow after drawing
 - [ ] Share a lot card as an image
@@ -174,6 +188,8 @@ Inspired by (no code copied): [westleft/fortuneStick](https://github.com/westlef
 觀音靈籤 poems, fortune levels and allusion titles adapted from the
 publicly-shared, human-verified dataset
 [yanxinyu777-beep/guanyin-lingqian-100](https://github.com/yanxinyu777-beep/guanyin-lingqian-100)
-(converted to Traditional Chinese). The 白話 paraphrase, allusion notes,
-six-aspect guidance and keywords in `guanyin_100.json` are original to this
-project.
+(converted to Traditional Chinese). 媽祖六十甲子籤 poems, 五行方位, 古人典故 and
+per-topic 聖意 adapted from
+[DestinyLab/lottery-poetry-sixty-jiazi](https://github.com/DestinyLab/lottery-poetry-sixty-jiazi)
+(MIT). The 白話 paraphrase, allusion notes, six-aspect guidance and keywords
+in both datasets are original to this project.

@@ -180,6 +180,14 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
               // ------- poem (vertical classical layout) -------
               PoemDisplay(lines: _lot.poem),
 
+              // 五行方位 (六十甲子系統)
+              if (_lot.wuxing.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Center(
+                  child: _Badge(text: _lot.wuxing, color: AppColors.gold),
+                ),
+              ],
+
               if (_lot.isExternal) ...[
                 const SizedBox(height: 10),
                 Text('※ 此籤種尚未收錄本地籤庫，以下解讀由 AI 依籤詩原文推敲。',
@@ -195,7 +203,11 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
               if (_lot.allusion.isNotEmpty)
                 _Section(title: '典故', child: Text(_lot.allusion)),
               if (_lot.meaning.isNotEmpty)
-                _Section(title: '解曰', child: Text(_lot.meaning)),
+                _Section(
+                  // 六十甲子系統 stores per-topic 聖意 rather than a 解曰 essay.
+                  title: _lot.sexagenary != null ? '聖意' : '解曰',
+                  child: Text(_lot.meaning),
+                ),
 
               // ------- aspects -------
               if (_lot.aspects.isNotEmpty)

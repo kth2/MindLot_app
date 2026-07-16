@@ -61,4 +61,55 @@ void main() {
       expect(lot, isNull);
     });
   });
+
+  group('LotRepository · 媽祖六十甲子籤', () {
+    late LotRepository repo;
+    setUp(() => repo = LotRepository());
+
+    test('mazu_60 is registered with a data file', () async {
+      final set = await repo.setById('mazu_60');
+      expect(set, isNotNull);
+      expect(set!.hasLocalData, isTrue);
+      expect(set.numberingStyle, 'sexagenary');
+      expect(set.totalLots, 60);
+    });
+
+    test('bundles the full set of 60 lots in traditional stem order', () async {
+      final lots = await repo.loadLots('mazu_60');
+      expect(lots.length, 60);
+      // Numbers are contiguous 1..60.
+      for (var i = 0; i < lots.length; i++) {
+        expect(lots[i].number, i + 1);
+      }
+      // Authentic 六十甲子 ordering groups by stem: 甲子·甲寅·甲辰·甲午·甲申·甲戌…
+      expect(lots[0].sexagenary, '甲子');
+      expect(lots[1].sexagenary, '甲寅');
+      expect(lots[6].sexagenary, '乙丑');
+      expect(lots[59].sexagenary, '癸亥');
+    });
+
+    test('every lot has a complete schema incl. 五行 and 聖意', () async {
+      final lots = await repo.loadLots('mazu_60');
+      final seen = <String>{};
+      for (final lot in lots) {
+        expect(lot.poem.length, 4, reason: '${lot.label} poem');
+        expect(lot.sexagenary, isNotNull, reason: '${lot.label}');
+        expect(lot.label, '${lot.sexagenary}籤');
+        expect(lot.wuxing, isNotEmpty, reason: '${lot.label} 五行');
+        expect(lot.meaning, isNotEmpty, reason: '${lot.label} 聖意');
+        expect(lot.poemTranslation, isNotEmpty, reason: '${lot.label}');
+        expect(lot.aspects.keys, containsAll(
+            ['career', 'love', 'wealth', 'health', 'study', 'travel']));
+        expect(seen.add(lot.sexagenary!), isTrue,
+            reason: 'duplicate ${lot.sexagenary}');
+      }
+    });
+
+    test('resolves a lot by its sexagenary designation', () async {
+      final lot = await repo.findBySexagenary('mazu_60', '丁亥');
+      expect(lot, isNotNull);
+      expect(lot!.number, 24);
+      expect(lot.poem.first, '月出光輝四海明');
+    });
+  });
 }

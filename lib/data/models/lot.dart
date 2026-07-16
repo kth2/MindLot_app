@@ -12,6 +12,7 @@ class Lot {
     this.poemTranslation = '',
     this.allusion = '',
     this.meaning = '',
+    this.wuxing = '',
     this.aspects = const {},
     this.keywords = const [],
   });
@@ -42,8 +43,13 @@ class Lot {
   /// Story behind the allusion (典故).
   final String allusion;
 
-  /// Classical interpretation (解曰).
+  /// Classical interpretation (解曰), or for 六十甲子籤 the traditional
+  /// per-topic 聖意 items joined together.
   final String meaning;
+
+  /// Five-elements & direction note (五行方位), e.g. 屬金，利在秋天，宜其西方.
+  /// Present for 六十甲子系統, empty otherwise.
+  final String wuxing;
 
   /// Aspect guidance keyed by: career, love, wealth, health, study, travel.
   final Map<String, String> aspects;
@@ -67,6 +73,7 @@ class Lot {
         poemTranslation: json['poemTranslation'] as String? ?? '',
         allusion: json['allusion'] as String? ?? '',
         meaning: json['meaning'] as String? ?? '',
+        wuxing: json['wuxing'] as String? ?? '',
         aspects: (json['aspects'] as Map<String, dynamic>? ?? const {})
             .map((k, v) => MapEntry(k, v.toString())),
         keywords: (json['keywords'] as List<dynamic>? ?? const [])

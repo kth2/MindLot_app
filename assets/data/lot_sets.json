@@ -11,7 +11,12 @@
       "numberingStyle": "numeric",
       "dataFile": "assets/data/guanyin_100.json",
       "description": "流傳最廣的觀音一百籤，每籤附籤詩、典故與解曰。",
-      "aliases": ["觀音百籤", "觀世音靈籤", "南海觀音靈籤", "觀音佛祖靈籤"]
+      "aliases": [
+        "觀音百籤",
+        "觀世音靈籤",
+        "南海觀音靈籤",
+        "觀音佛祖靈籤"
+      ]
     },
     {
       "id": "mazu_60",
@@ -20,9 +25,13 @@
       "deity": "天上聖母",
       "totalLots": 60,
       "numberingStyle": "sexagenary",
-      "dataFile": null,
-      "description": "媽祖六十甲子籤，以天干地支（甲子、乙丑⋯⋯）編號。",
-      "aliases": ["天上聖母靈籤", "媽祖六十甲子籤", "聖母籤"]
+      "dataFile": "assets/data/mazu_60.json",
+      "description": "媽祖六十甲子籤，以六十甲子干支（甲子、甲寅、甲辰⋯⋯）編號，附五行方位與聖意。",
+      "aliases": [
+        "天上聖母靈籤",
+        "媽祖六十甲子籤",
+        "聖母籤"
+      ]
     },
     {
       "id": "jiazi_60",
@@ -33,7 +42,10 @@
       "numberingStyle": "sexagenary",
       "dataFile": null,
       "description": "臺灣廟宇常見之六十甲子籤，多用於王爺、保生大帝等廟宇。",
-      "aliases": ["甲子籤", "六十籤"]
+      "aliases": [
+        "甲子籤",
+        "六十籤"
+      ]
     },
     {
       "id": "wongtaisin_100",
@@ -44,7 +56,10 @@
       "numberingStyle": "numeric",
       "dataFile": null,
       "description": "香港黃大仙祠一百靈籤，每籤附古人典故。",
-      "aliases": ["黃大仙祠靈籤", "赤松黃大仙籤"]
+      "aliases": [
+        "黃大仙祠靈籤",
+        "赤松黃大仙籤"
+      ]
     }
   ]
 }

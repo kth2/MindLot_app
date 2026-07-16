@@ -30,6 +30,7 @@ class GeminiInterpretationService implements InterpretationService {
             poemTranslation: lot.poemTranslation,
             allusion: lot.allusion,
             meaning: lot.meaning,
+            wuxing: lot.wuxing,
             category: category,
             question: question,
           ),
