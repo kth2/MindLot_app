@@ -17,7 +17,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
-| 🈯 Multi-set data model: 觀音靈籤 (**100 lots**) · 媽祖六十甲子籤 (**60 lots**, with 五行方位 & 聖意) · 六十甲子籤 (**60 lots**, shares the Mazu poem system) · 黃大仙靈籤 (recognized from photos; local DB planned) | ✅ / 🚧 |
+| 🈯 Multi-set data model: 觀音靈籤 (**100 lots**) · 媽祖六十甲子籤 (**60 lots**, with 五行方位 & 聖意) · 六十甲子籤 (**60 lots**, shares the Mazu poem system) · 黃大仙靈籤 (**100 lots**, with 典故 & 解籤) | ✅ |
 
 ## 🚀 Getting Started
 
@@ -161,6 +161,13 @@ source file.
 > traditional stem-grouped sequence (甲子·甲寅·甲辰·甲午·甲申·甲戌, 乙丑·乙卯…
 > — yang stems with yang branches), **not** the continuous 干支 cycle. Same
 > verify-before-release caveat applies.
+>
+> `wongtaisin_100.json` contains the **complete 100 lots** (嗇色園黃大仙祠款).
+> Poems, 吉凶 grades, 籤題, 典故, 解籤 and the per-category guidance come from
+> the public [wickes1/wong-tai-sin](https://github.com/wickes1/wong-tai-sin)
+> dataset; only the 白話 paraphrase and keywords are authored for this app.
+> Lot 79's source text dropped its final character — restored to the common
+> reading (…土一坵). Same verify-before-release caveat applies.
 
 ## 🙏 Design Principles
 
@@ -176,7 +183,7 @@ source file.
 - [x] Complete 觀音靈籤 all 100 lots
 - [x] Complete 媽祖六十甲子籤 all 60 lots
 - [x] Wire up 六十甲子籤 (王爺/保生大帝廟) — shares the Mazu poem system
-- [ ] Add 黃大仙靈籤 database
+- [x] Complete 黃大仙靈籤 all 100 lots — **all four registered sets now have data**
 - [ ] In-app live viewfinder with the `camera` package (guided framing overlay)
 - [ ] 擲筊 confirmation flow after drawing
 - [ ] Share a lot card as an image
@@ -195,5 +202,8 @@ publicly-shared, human-verified dataset
 (converted to Traditional Chinese). 媽祖六十甲子籤 poems, 五行方位, 古人典故 and
 per-topic 聖意 adapted from
 [DestinyLab/lottery-poetry-sixty-jiazi](https://github.com/DestinyLab/lottery-poetry-sixty-jiazi)
-(MIT). The 白話 paraphrase, allusion notes, six-aspect guidance and keywords
-in both datasets are original to this project.
+(MIT). 黃大仙靈籤 poems, 吉凶 grades, 籤題, 典故, 解籤 and per-category guidance
+adapted from [wickes1/wong-tai-sin](https://github.com/wickes1/wong-tai-sin).
+The 白話 paraphrase and keywords across all datasets — plus the allusion notes
+and six-aspect guidance for the Guanyin and Mazu sets — are original to this
+project.

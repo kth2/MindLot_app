@@ -55,8 +55,8 @@
       "deity": "黃大仙",
       "totalLots": 100,
       "numberingStyle": "numeric",
-      "dataFile": null,
-      "description": "香港黃大仙祠一百靈籤，每籤附古人典故。",
+      "dataFile": "assets/data/wongtaisin_100.json",
+      "description": "香港嗇色園黃大仙祠一百靈籤，每籤附籤詩、典故、解籤與六事指引。",
       "aliases": [
         "黃大仙祠靈籤",
         "赤松黃大仙籤"

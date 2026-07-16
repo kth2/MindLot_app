@@ -132,4 +132,53 @@ void main() {
       expect(ids, containsAll(['guanyin_100', 'mazu_60', 'jiazi_60']));
     });
   });
+
+  group('LotRepository · 黃大仙靈籤', () {
+    late LotRepository repo;
+    setUp(() => repo = LotRepository());
+
+    test('wongtaisin_100 is registered with a data file', () async {
+      final set = await repo.setById('wongtaisin_100');
+      expect(set, isNotNull);
+      expect(set!.hasLocalData, isTrue);
+      expect(set.numberingStyle, 'numeric');
+      expect(set.totalLots, 100);
+    });
+
+    test('bundles the full set of 100 lots, contiguous', () async {
+      final lots = await repo.loadLots('wongtaisin_100');
+      expect(lots.length, 100);
+      for (var i = 0; i < lots.length; i++) {
+        expect(lots[i].number, i + 1);
+      }
+    });
+
+    test('every lot has a complete schema incl. authentic aspects', () async {
+      final lots = await repo.loadLots('wongtaisin_100');
+      for (final lot in lots) {
+        expect(lot.poem.length, 4, reason: '第${lot.number}籤 poem');
+        expect(lot.level, isNotEmpty, reason: '第${lot.number}籤 level');
+        expect(lot.title, isNotEmpty, reason: '第${lot.number}籤 title');
+        expect(lot.poemTranslation, isNotEmpty, reason: '第${lot.number}籤 白話');
+        expect(lot.allusion, isNotEmpty, reason: '第${lot.number}籤 典故');
+        expect(lot.meaning, isNotEmpty, reason: '第${lot.number}籤 解籤');
+        expect(lot.aspects.keys, containsAll(
+            ['career', 'love', 'wealth', 'health', 'study', 'travel']));
+      }
+    });
+
+    test('lot 1 (姜公封相) resolves with its 上上 grade', () async {
+      final lot = await repo.findLot('wongtaisin_100', 1);
+      expect(lot, isNotNull);
+      expect(lot!.title, '姜公封相');
+      expect(lot.level, '上上');
+      expect(lot.poem.first, '靈籤求得第一枝');
+    });
+
+    test('all four lot systems are now drawable', () async {
+      final ids = (await repo.setsWithData()).map((s) => s.id);
+      expect(ids, containsAll(
+          ['guanyin_100', 'mazu_60', 'jiazi_60', 'wongtaisin_100']));
+    });
+  });
 }
