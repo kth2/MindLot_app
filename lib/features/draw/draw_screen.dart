@@ -9,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../data/models/lot.dart';
 import '../../data/models/lot_set.dart';
 import '../../providers/providers.dart';
+import 'widgets/jiao_bei_sheet.dart';
 import 'widgets/lot_cylinder.dart';
 
 /// 線上求籤 — simulate shaking a divination cylinder with animation and
@@ -68,6 +69,34 @@ class _DrawScreenState extends ConsumerState<DrawScreen>
       _shaking = false;
       _drawnLot = lot;
     });
+  }
+
+  void _openLot() {
+    context.push(
+      '/lot',
+      extra: LotDetailArgs(
+        lot: _drawnLot!,
+        setName: _selectedSet?.name ?? '',
+        source: 'draw',
+      ),
+    );
+  }
+
+  /// Invite the user to 擲筊 to confirm the drawn lot before reading it.
+  Future<void> _openJiaoBei() async {
+    final outcome = await showJiaoBeiSheet(
+      context,
+      ref,
+      lot: _drawnLot!,
+      setName: _selectedSet?.name ?? '',
+    );
+    if (!mounted || outcome == null) return;
+    switch (outcome) {
+      case JiaoOutcome.confirmed:
+        _openLot();
+      case JiaoOutcome.redraw:
+        _startShake();
+    }
   }
 
   @override
@@ -146,14 +175,8 @@ class _DrawScreenState extends ConsumerState<DrawScreen>
                 _RevealCard(
                   lot: _drawnLot!,
                   setName: _selectedSet?.name ?? '',
-                  onOpen: () => context.push(
-                    '/lot',
-                    extra: LotDetailArgs(
-                      lot: _drawnLot!,
-                      setName: _selectedSet?.name ?? '',
-                      source: 'draw',
-                    ),
-                  ),
+                  onCast: _openJiaoBei,
+                  onOpen: _openLot,
                   onRedraw: _startShake,
                 ),
             ],
@@ -168,12 +191,14 @@ class _RevealCard extends StatelessWidget {
   const _RevealCard({
     required this.lot,
     required this.setName,
+    required this.onCast,
     required this.onOpen,
     required this.onRedraw,
   });
 
   final Lot lot;
   final String setName;
+  final VoidCallback onCast;
   final VoidCallback onOpen;
   final VoidCallback onRedraw;
 
@@ -233,12 +258,24 @@ class _RevealCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: FilledButton(
-                      onPressed: onOpen,
-                      child: const Text('恭請解籤'),
+                    child: FilledButton.icon(
+                      onPressed: onCast,
+                      icon: const Icon(Icons.casino_outlined, size: 18),
+                      label: const Text('擲筊請示'),
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: onOpen,
+                child: Text(
+                  '不擲筊，直接解籤',
+                  style: TextStyle(
+                    color:
+                        theme.colorScheme.onSurface.withValues(alpha: 0.55),
+                  ),
+                ),
               ),
             ],
           ),

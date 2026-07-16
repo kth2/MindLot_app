@@ -14,6 +14,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 📷 **Photo recognition** of physical lots (籤枝/籤詩紙) via Gemini Vision — identifies lot type, number (incl. Chinese numerals & 干支), and extracts the poem | ✅ |
 | 🔁 **Graceful fallbacks**: poem fuzzy-matching when the number is unreadable → AI interpretation from extracted poem when the set isn't in the local DB → manual input | ✅ |
 | 🎋 **Traditional drawing**: animated shaking cylinder with sound | ✅ |
+| 🥮 **擲筊 confirmation**: throw the moon blocks (聖筊/笑筊/陰筊) to ask the deity's approval of a drawn lot before reading it | ✅ |
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
@@ -184,8 +185,9 @@ source file.
 - [x] Complete 媽祖六十甲子籤 all 60 lots
 - [x] Wire up 六十甲子籤 (王爺/保生大帝廟) — shares the Mazu poem system
 - [x] Complete 黃大仙靈籤 all 100 lots — **all four registered sets now have data**
+- [x] 擲筊 confirmation flow after drawing (moon blocks: 聖筊/笑筊/陰筊)
 - [ ] In-app live viewfinder with the `camera` package (guided framing overlay)
-- [ ] 擲筊 confirmation flow after drawing
+- [ ] 擲筊 confirmation on the photo-recognition flow too
 - [ ] Share a lot card as an image
 - [ ] i18n (zh-TW / zh-CN / en)
 

@@ -15,5 +15,15 @@ class SoundService {
     }
   }
 
+  /// The clack of the moon blocks (筊杯) landing.
+  Future<void> playCast() async {
+    try {
+      await _player.stop();
+      await _player.play(AssetSource('sounds/jiaobei.wav'));
+    } catch (e) {
+      debugPrint('SoundService: $e');
+    }
+  }
+
   void dispose() => _player.dispose();
 }
