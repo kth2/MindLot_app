@@ -10,6 +10,7 @@ import '../../core/theme/app_colors.dart';
 import '../../data/models/lot.dart';
 import '../../data/models/vision_result.dart';
 import '../../providers/providers.dart';
+import '../draw/widgets/jiao_bei_sheet.dart';
 import 'widgets/manual_input_sheet.dart';
 
 /// 拍照辨籤 — photograph a physical lot; Vision AI identifies the set,
@@ -167,6 +168,36 @@ class _PhotoRecognitionScreenState
     }
   }
 
+  void _openReading(_Resolved resolved) {
+    context.push(
+      '/lot',
+      extra: LotDetailArgs(
+        lot: resolved.lot,
+        setName: resolved.setName,
+        source: 'photo',
+      ),
+    );
+  }
+
+  /// Offer 擲筊 to confirm the recognized lot before reading it. A 陰筊 here
+  /// suggests the reading may be off, so it routes to the correction path.
+  Future<void> _openJiaoBei(_Resolved resolved) async {
+    final outcome = await showJiaoBeiSheet(
+      context,
+      ref,
+      lot: resolved.lot,
+      setName: resolved.setName,
+      redrawLabel: '修正籤號',
+    );
+    if (!mounted || outcome == null) return;
+    switch (outcome) {
+      case JiaoOutcome.confirmed:
+        _openReading(resolved);
+      case JiaoOutcome.redraw:
+        _openManualInput();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -281,14 +312,8 @@ class _PhotoRecognitionScreenState
                 _ResultCard(
                   resolved: _resolved!,
                   confidence: _visionResult?.confidence ?? 0,
-                  onConfirm: () => context.push(
-                    '/lot',
-                    extra: LotDetailArgs(
-                      lot: _resolved!.lot,
-                      setName: _resolved!.setName,
-                      source: 'photo',
-                    ),
-                  ),
+                  onCast: () => _openJiaoBei(_resolved!),
+                  onConfirm: () => _openReading(_resolved!),
                   onCorrect: _openManualInput,
                 ),
               ],
@@ -314,12 +339,14 @@ class _ResultCard extends StatelessWidget {
   const _ResultCard({
     required this.resolved,
     required this.confidence,
+    required this.onCast,
     required this.onConfirm,
     required this.onCorrect,
   });
 
   final _Resolved resolved;
   final double confidence;
+  final VoidCallback onCast;
   final VoidCallback onConfirm;
   final VoidCallback onCorrect;
 
@@ -392,12 +419,23 @@ class _ResultCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: FilledButton(
-                    onPressed: onConfirm,
-                    child: const Text('正確，解籤'),
+                  child: FilledButton.icon(
+                    onPressed: onCast,
+                    icon: const Icon(Icons.casino_outlined, size: 18),
+                    label: const Text('擲筊請示'),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 4),
+            TextButton(
+              onPressed: onConfirm,
+              child: Text(
+                '不擲筊，直接解籤',
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
+                ),
+              ),
             ),
           ],
         ),

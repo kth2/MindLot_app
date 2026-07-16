@@ -18,30 +18,39 @@ enum JiaoOutcome {
   redraw,
 }
 
-/// Presents the 擲筊 (moon-block) confirmation ritual for a freshly drawn [lot].
+/// Presents the 擲筊 (moon-block) confirmation ritual for a [lot].
 ///
 /// Returns [JiaoOutcome.confirmed] to open the reading, [JiaoOutcome.redraw]
-/// to shake again, or null if dismissed.
+/// to take the alternative action (draw anew, or correct a photo reading),
+/// or null if dismissed. [redrawLabel] names that alternative — it is what
+/// the 陰筊 button reads (e.g. 重新求籤 when drawing, 修正籤號 from a photo).
 Future<JiaoOutcome?> showJiaoBeiSheet(
   BuildContext context,
   WidgetRef ref, {
   required Lot lot,
   required String setName,
+  String redrawLabel = '重新求籤',
 }) {
   return showModalBottomSheet<JiaoOutcome>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    builder: (_) => _JiaoBeiSheet(lot: lot, setName: setName),
+    builder: (_) =>
+        _JiaoBeiSheet(lot: lot, setName: setName, redrawLabel: redrawLabel),
   );
 }
 
 class _JiaoBeiSheet extends ConsumerStatefulWidget {
-  const _JiaoBeiSheet({required this.lot, required this.setName});
+  const _JiaoBeiSheet({
+    required this.lot,
+    required this.setName,
+    required this.redrawLabel,
+  });
 
   final Lot lot;
   final String setName;
+  final String redrawLabel;
 
   @override
   ConsumerState<_JiaoBeiSheet> createState() => _JiaoBeiSheetState();
@@ -187,7 +196,7 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
                 TextButton(
                   onPressed: () =>
                       Navigator.of(context).pop(JiaoOutcome.redraw),
-                  child: const Text('重新求籤'),
+                  child: Text(widget.redrawLabel),
                 ),
               if (!confirmed && _throw != null)
                 TextButton(
