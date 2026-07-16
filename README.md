@@ -17,7 +17,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
-| 🈯 Multi-set data model: 觀音靈籤 (**complete 100 lots**) · 媽祖六十甲子籤 (**complete 60 lots**, with 五行方位 & 聖意) · 六十甲子籤 · 黃大仙靈籤 (recognized from photos; local DBs planned) | ✅ / 🚧 |
+| 🈯 Multi-set data model: 觀音靈籤 (**100 lots**) · 媽祖六十甲子籤 (**60 lots**, with 五行方位 & 聖意) · 六十甲子籤 (**60 lots**, shares the Mazu poem system) · 黃大仙靈籤 (recognized from photos; local DB planned) | ✅ / 🚧 |
 
 ## 🚀 Getting Started
 
@@ -140,7 +140,10 @@ All lot data ships as JSON under `assets/data/`:
 Adding a new lot system = one JSON file + one registry entry. No code changes.
 `level` may be empty (媽祖六十甲子籤 carries no single fortune grade — its 吉凶
 lives in the poem and 聖意), and the optional `wuxing` field is rendered only
-when present.
+when present. Two registry entries may point at the **same** `dataFile`
+(六十甲子籤 reuses 媽祖's poems); `loadLots` stamps each lot with the requested
+`setId`, so the sets stay distinct in history and the UI while sharing one
+source file.
 
 > ⚠️ **Data accuracy**: `guanyin_100.json` now contains the **complete 100
 > lots**. Poems, fortune levels (上籤/中籤/下籤) and allusion titles come from a
@@ -172,7 +175,8 @@ when present.
 
 - [x] Complete 觀音靈籤 all 100 lots
 - [x] Complete 媽祖六十甲子籤 all 60 lots
-- [ ] Add 六十甲子籤 (王爺/保生大帝廟, shares the same poem system), 黃大仙靈籤 databases
+- [x] Wire up 六十甲子籤 (王爺/保生大帝廟) — shares the Mazu poem system
+- [ ] Add 黃大仙靈籤 database
 - [ ] In-app live viewfinder with the `camera` package (guided framing overlay)
 - [ ] 擲筊 confirmation flow after drawing
 - [ ] Share a lot card as an image

@@ -40,8 +40,9 @@
       "deity": "通用",
       "totalLots": 60,
       "numberingStyle": "sexagenary",
-      "dataFile": null,
-      "description": "臺灣廟宇常見之六十甲子籤，多用於王爺、保生大帝等廟宇。",
+      "dataFile": "assets/data/mazu_60.json",
+      "dataNote": "與媽祖六十甲子籤同源共用同一組籤詩；載入時各籤的 setId 會標記為 jiazi_60。",
+      "description": "臺灣廟宇常見之六十甲子籤，多用於王爺、保生大帝等廟宇，與媽祖籤同一組籤詩。",
       "aliases": [
         "甲子籤",
         "六十籤"

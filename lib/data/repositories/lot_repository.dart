@@ -86,7 +86,11 @@ class LotRepository {
 
     Lot? best;
     var bestScore = 0.0;
+    // Some sets share a data file (e.g. 媽祖 & 六十甲子籤 use the same poems);
+    // scan each physical file once so matching stays efficient and stable.
+    final seenFiles = <String>{};
     for (final set in await setsWithData()) {
+      if (!seenFiles.add(set.dataFile!)) continue;
       for (final lot in await loadLots(set.id)) {
         final candidate = _cjkOnly(lot.poem.join());
         if (candidate.isEmpty) continue;

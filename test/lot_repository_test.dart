@@ -111,5 +111,25 @@ void main() {
       expect(lot!.number, 24);
       expect(lot.poem.first, '月出光輝四海明');
     });
+
+    test('六十甲子籤 shares the same poems but keeps its own setId', () async {
+      final jiazi = await repo.setById('jiazi_60');
+      expect(jiazi, isNotNull);
+      expect(jiazi!.hasLocalData, isTrue);
+
+      final jiaziLots = await repo.loadLots('jiazi_60');
+      final mazuLots = await repo.loadLots('mazu_60');
+      expect(jiaziLots.length, 60);
+      // Same poem system…
+      expect(jiaziLots[23].poem, mazuLots[23].poem);
+      expect(jiaziLots[23].sexagenary, '丁亥');
+      // …but each lot is stamped with the set it was loaded as.
+      expect(jiaziLots.every((l) => l.setId == 'jiazi_60'), isTrue);
+    });
+
+    test('both sexagenary sets appear in the drawable list', () async {
+      final ids = (await repo.setsWithData()).map((s) => s.id);
+      expect(ids, containsAll(['guanyin_100', 'mazu_60', 'jiazi_60']));
+    });
   });
 }
