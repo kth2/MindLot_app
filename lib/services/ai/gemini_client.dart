@@ -66,7 +66,7 @@ class GeminiClient {
             uri,
             headers: {
               'Content-Type': 'application/json',
-              'x-goog-api-key': config.apiKey,
+              'x-goog-api-key': config.effectiveKey,
             },
             body: body,
           )

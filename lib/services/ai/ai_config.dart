@@ -43,7 +43,13 @@ class AiConfig {
   final String visionModel;
   final String textModel;
 
-  bool get isConfigured => apiKey.isNotEmpty;
+  /// The key actually sent to the API, with surrounding whitespace and
+  /// stray quotes stripped — e.g. PowerShell includes the quotes when you
+  /// write `--dart-define=GEMINI_API_KEY='...'`, which would break auth.
+  String get effectiveKey =>
+      apiKey.trim().replaceAll(RegExp(r'''^['"]+|['"]+$'''), '').trim();
+
+  bool get isConfigured => effectiveKey.isNotEmpty;
 }
 
 /// Machine-readable reasons an AI call can fail, mapped to localized text
