@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// A viewfinder overlay: dims everything outside a centred frame, draws gold
 /// corner brackets, and shows guidance text — to help the user line up a
@@ -24,6 +25,7 @@ class FramingOverlay extends StatelessWidget {
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
         final frame = frameOf(size);
+        final l10n = AppLocalizations.of(context);
         return IgnorePointer(
           child: Stack(
             children: [
@@ -37,7 +39,7 @@ class FramingOverlay extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '將籤枝或籤詩對準框內',
+                      l10n.frameAlign,
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
@@ -52,7 +54,7 @@ class FramingOverlay extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '正對、光線充足、避免反光',
+                      l10n.frameHint,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.8),

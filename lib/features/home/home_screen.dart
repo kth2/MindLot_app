@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/history_provider.dart';
 
 /// Temple-style landing screen: two primary rites (photo / draw) plus quick
@@ -13,6 +14,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final recent = ref.watch(historyProvider).valueOrNull ?? const [];
 
     return Scaffold(
@@ -25,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('心籤通',
+                  Text(l10n.appName,
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         letterSpacing: 6,
@@ -34,11 +36,11 @@ class HomeScreen extends ConsumerWidget {
                   IconButton(
                     onPressed: () => context.push('/settings'),
                     icon: const Icon(Icons.settings_outlined),
-                    tooltip: '設定',
+                    tooltip: l10n.settings,
                   ),
                 ],
               ),
-              Text('MindLot · 掌中靈籤，心誠則靈',
+              Text(l10n.homeMotto,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     letterSpacing: 2,
@@ -48,16 +50,16 @@ class HomeScreen extends ConsumerWidget {
               // 主祀二禮：拍照辨籤 / 線上求籤
               _RiteCard(
                 icon: Icons.photo_camera_outlined,
-                title: '拍照辨籤',
-                subtitle: '拍下廟中求得的籤枝或籤詩\nAI 為您辨識並解籤',
+                title: l10n.ritePhotoTitle,
+                subtitle: l10n.ritePhotoSubtitle,
                 accent: AppColors.vermilion,
                 onTap: () => context.push('/photo'),
               ),
               const SizedBox(height: 16),
               _RiteCard(
                 icon: Icons.auto_awesome_outlined,
-                title: '線上求籤',
-                subtitle: '默念心中所求，搖籤筒\n誠心抽出一支靈籤',
+                title: l10n.riteDrawTitle,
+                subtitle: l10n.riteDrawSubtitle,
                 accent: AppColors.gold,
                 onTap: () => context.push('/draw'),
               ),
@@ -66,12 +68,12 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('近期籤記',
+                  Text(l10n.recentRecords,
                       style: theme.textTheme.titleMedium
                           ?.copyWith(letterSpacing: 2)),
                   TextButton(
                     onPressed: () => context.push('/history'),
-                    child: const Text('全部 ›'),
+                    child: Text(l10n.viewAll),
                   ),
                 ],
               ),
@@ -80,7 +82,7 @@ class HomeScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   child: Center(
                     child: Text(
-                      '尚無紀錄，求一支籤開始吧',
+                      l10n.emptyRecent,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color:
                             theme.colorScheme.onSurface.withValues(alpha: 0.5),
@@ -121,7 +123,7 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               Center(
                 child: Text(
-                  '籤詩乃心之明鏡，指引而非定命',
+                  l10n.appFooter,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                     letterSpacing: 2,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/lot.dart';
 import '../../../data/models/lot_set.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
 
 class ManualPick {
@@ -42,14 +43,15 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
   }
 
   Future<void> _confirm() async {
+    final l10n = AppLocalizations.of(context);
     final set = _selectedSet;
     final number = int.tryParse(_numberController.text.trim());
     if (set == null) {
-      setState(() => _error = '請先選擇籤種');
+      setState(() => _error = l10n.selectSetFirst);
       return;
     }
     if (number == null || number < 1 || number > set.totalLots) {
-      setState(() => _error = '請輸入 1–${set.totalLots} 之間的籤號');
+      setState(() => _error = l10n.numberRangeError(set.totalLots));
       return;
     }
     setState(() {
@@ -61,7 +63,7 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
     if (lot == null) {
       setState(() {
         _loading = false;
-        _error = '第 $number 籤的資料尚未收錄，敬請期待後續更新。';
+        _error = l10n.lotNotYetAdded(number);
       });
       return;
     }
@@ -71,6 +73,7 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final setsAsync = ref.watch(lotSetsWithDataProvider);
 
     return Padding(
@@ -84,14 +87,14 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('手動輸入籤號',
+          Text(l10n.manualInput,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 3)),
           const SizedBox(height: 20),
           setsAsync.when(
             loading: () =>
                 const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Text('籤庫載入失敗：$e'),
+            error: (e, _) => Text(l10n.setLoadError(e)),
             data: (sets) => Wrap(
               spacing: 10,
               runSpacing: 10,
@@ -111,10 +114,10 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
             controller: _numberController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: '籤號',
+              labelText: l10n.lotNumberLabel,
               hintText: _selectedSet == null
-                  ? '請先選擇籤種'
-                  : '1 – ${_selectedSet!.totalLots}',
+                  ? l10n.selectSetFirst
+                  : l10n.numberRangeHint(_selectedSet!.totalLots),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -128,7 +131,7 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: _loading ? null : _confirm,
-            child: Text(_loading ? '查詢中⋯' : '查閱此籤'),
+            child: Text(_loading ? l10n.querying : l10n.viewThisLot),
           ),
         ],
       ),

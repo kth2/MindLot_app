@@ -8,6 +8,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/lot.dart';
 import '../../data/models/lot_set.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
 import 'widgets/jiao_bei_sheet.dart';
 import 'widgets/lot_cylinder.dart';
@@ -89,6 +90,7 @@ class _DrawScreenState extends ConsumerState<DrawScreen>
       ref,
       lot: _drawnLot!,
       setName: _selectedSet?.name ?? '',
+      redrawLabel: AppLocalizations.of(context).drawAnew,
     );
     if (!mounted || outcome == null) return;
     switch (outcome) {
@@ -102,17 +104,18 @@ class _DrawScreenState extends ConsumerState<DrawScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final setsAsync = ref.watch(lotSetsWithDataProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('線上求籤')),
+      appBar: AppBar(title: Text(l10n.riteDrawTitle)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('默念您想請示的事情\n心誠則靈',
+              Text(l10n.drawInstruction,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     height: 1.8,
@@ -125,7 +128,7 @@ class _DrawScreenState extends ConsumerState<DrawScreen>
               setsAsync.when(
                 loading: () =>
                     const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text('籤庫載入失敗：$e'),
+                error: (e, _) => Text(l10n.setLoadError(e)),
                 data: (sets) {
                   _selectedSet ??= sets.isNotEmpty ? sets.first : null;
                   return Wrap(
@@ -169,7 +172,7 @@ class _DrawScreenState extends ConsumerState<DrawScreen>
                   onPressed:
                       (_shaking || _selectedSet == null) ? null : _startShake,
                   icon: const Icon(Icons.vibration),
-                  label: Text(_shaking ? '搖籤中⋯' : '誠心搖籤'),
+                  label: Text(_shaking ? l10n.shaking : l10n.shake),
                 )
               else
                 _RevealCard(
@@ -205,6 +208,7 @@ class _RevealCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: const Duration(milliseconds: 500),
@@ -218,7 +222,7 @@ class _RevealCard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Text('您求得',
+              Text(l10n.youDrew,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     letterSpacing: 4,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -253,7 +257,7 @@ class _RevealCard extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onRedraw,
-                      child: const Text('再搖一次'),
+                      child: Text(l10n.shakeAgain),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -261,7 +265,7 @@ class _RevealCard extends StatelessWidget {
                     child: FilledButton.icon(
                       onPressed: onCast,
                       icon: const Icon(Icons.casino_outlined, size: 18),
-                      label: const Text('擲筊請示'),
+                      label: Text(l10n.castConsult),
                     ),
                   ),
                 ],
@@ -270,7 +274,7 @@ class _RevealCard extends StatelessWidget {
               TextButton(
                 onPressed: onOpen,
                 child: Text(
-                  '不擲筊，直接解籤',
+                  l10n.skipCastRead,
                   style: TextStyle(
                     color:
                         theme.colorScheme.onSurface.withValues(alpha: 0.55),

@@ -19,16 +19,6 @@ void main() {
       expect(jiaoResultOf(BlockFace.round, BlockFace.round),
           JiaoResult.negative);
     });
-
-    test('display names and messages are present for every outcome', () {
-      for (final r in JiaoResult.values) {
-        expect(r.name, isNotEmpty);
-        expect(r.message, isNotEmpty);
-      }
-      expect(JiaoResult.sacred.name, '聖筊');
-      expect(JiaoResult.laughing.name, '笑筊');
-      expect(JiaoResult.negative.name, '陰筊');
-    });
   });
 
   group('JiaoThrow.random', () {

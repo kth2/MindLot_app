@@ -42,18 +42,3 @@ class JiaoThrow {
   }
 }
 
-extension JiaoResultDisplay on JiaoResult {
-  /// Name of the outcome (聖筊 / 笑筊 / 陰筊).
-  String get name => switch (this) {
-        JiaoResult.sacred => '聖筊',
-        JiaoResult.laughing => '笑筊',
-        JiaoResult.negative => '陰筊',
-      };
-
-  /// Short, warm explanation shown to the user.
-  String get message => switch (this) {
-        JiaoResult.sacred => '神明應允，此籤正是為您而降。',
-        JiaoResult.laughing => '神明含笑未答，心念一想，再擲一次。',
-        JiaoResult.negative => '神明搖首，此籤或非所問，可重新求籤。',
-      };
-}

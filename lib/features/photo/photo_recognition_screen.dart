@@ -9,6 +9,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/lot.dart';
 import '../../data/models/vision_result.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
 import '../draw/widgets/jiao_bei_sheet.dart';
 import 'camera_capture_screen.dart';
@@ -52,7 +53,7 @@ class _PhotoRecognitionScreenState
       );
       if (file != null) await _applyFile(file);
     } catch (e) {
-      setState(() => _error = '無法取得照片：$e');
+      setState(() => _error = AppLocalizations.of(context).photoLoadError(e));
     }
   }
 
@@ -64,7 +65,10 @@ class _PhotoRecognitionScreenState
       );
       if (file != null && mounted) await _applyFile(file);
     } catch (e) {
-      if (mounted) setState(() => _error = '無法開啟相機：$e');
+      if (mounted) {
+        setState(() =>
+            _error = AppLocalizations.of(context).cameraOpenError(e));
+      }
     }
   }
 
@@ -83,6 +87,7 @@ class _PhotoRecognitionScreenState
   Future<void> _analyze() async {
     final bytes = _imageBytes;
     if (bytes == null) return;
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _analyzing = true;
       _error = null;
@@ -97,16 +102,16 @@ class _PhotoRecognitionScreenState
             mimeType: _mimeType,
             knownSets: sets,
           );
-      final resolved = await _resolve(result);
+      final resolved = await _resolve(result, l10n);
       if (!mounted) return;
       setState(() {
         _visionResult = result;
         _resolved = resolved;
         _analyzing = false;
         if (!result.recognized) {
-          _error = '照片中未能辨識出籤枝或籤詩，請重拍或改用手動輸入。';
+          _error = l10n.photoNotRecognized;
         } else if (resolved == null) {
-          _error = '辨識到籤詩但無法對應籤庫，請確認或手動輸入。';
+          _error = l10n.poemMatchedNoSet;
         }
       });
     } catch (e) {
@@ -120,7 +125,8 @@ class _PhotoRecognitionScreenState
 
   /// Maps the vision output onto the local database, in order of trust:
   /// set+number → set+sexagenary → poem fuzzy match → external (poem only).
-  Future<_Resolved?> _resolve(VisionResult result) async {
+  Future<_Resolved?> _resolve(
+      VisionResult result, AppLocalizations l10n) async {
     if (!result.recognized) return null;
     final repo = ref.read(lotRepositoryProvider);
 
@@ -146,15 +152,15 @@ class _PhotoRecognitionScreenState
         return _Resolved(
           lot: lot,
           setName: set?.name ?? '',
-          note: '已由籤詩內容比對出此籤',
+          note: l10n.matchedByPoem,
         );
       }
       // Poem readable but not in our database — interpret it directly.
       if (result.poemLines.length >= 2) {
         final setName = result.setNameGuess ??
             (result.setId != null
-                ? (await repo.setById(result.setId!))?.name ?? '未知籤種'
-                : '未知籤種');
+                ? (await repo.setById(result.setId!))?.name ?? l10n.unknownSet
+                : l10n.unknownSet);
         return _Resolved(
           lot: Lot.external(
             setId: result.setId ?? 'unknown',
@@ -164,7 +170,7 @@ class _PhotoRecognitionScreenState
             poem: result.poemLines,
           ),
           setName: setName,
-          note: '此籤種尚無本地籤庫，將以照片擷取的籤詩進行 AI 解籤',
+          note: l10n.externalPhotoNote,
         );
       }
     }
@@ -204,7 +210,7 @@ class _PhotoRecognitionScreenState
       ref,
       lot: resolved.lot,
       setName: resolved.setName,
-      redrawLabel: '修正籤號',
+      redrawLabel: AppLocalizations.of(context).fixNumber,
     );
     if (!mounted || outcome == null) return;
     switch (outcome) {
@@ -218,9 +224,10 @@ class _PhotoRecognitionScreenState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('拍照辨籤')),
+      appBar: AppBar(title: Text(l10n.ritePhotoTitle)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -247,7 +254,7 @@ class _PhotoRecognitionScreenState
                                 color: theme.colorScheme.onSurface
                                     .withValues(alpha: 0.3)),
                             const SizedBox(height: 12),
-                            Text('請拍攝籤枝或籤詩紙\n盡量正對、光線充足、避免反光',
+                            Text(l10n.photoHint,
                                 textAlign: TextAlign.center,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: theme.colorScheme.onSurface
@@ -268,7 +275,7 @@ class _PhotoRecognitionScreenState
                     child: OutlinedButton.icon(
                       onPressed: _analyzing ? null : _openCamera,
                       icon: const Icon(Icons.photo_camera_outlined),
-                      label: const Text('拍照'),
+                      label: Text(l10n.takePhoto),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -278,7 +285,7 @@ class _PhotoRecognitionScreenState
                           ? null
                           : () => _pickImage(ImageSource.gallery),
                       icon: const Icon(Icons.photo_library_outlined),
-                      label: const Text('相簿'),
+                      label: Text(l10n.gallery),
                     ),
                   ),
                 ],
@@ -295,7 +302,7 @@ class _PhotoRecognitionScreenState
                             strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(_analyzing ? 'AI 辨識中⋯' : '開始辨識'),
+                label: Text(_analyzing ? l10n.analyzing : l10n.startRecognition),
               ),
 
               // ------- error + manual fallback -------
@@ -314,7 +321,7 @@ class _PhotoRecognitionScreenState
                         OutlinedButton.icon(
                           onPressed: _openManualInput,
                           icon: const Icon(Icons.edit_outlined),
-                          label: const Text('手動輸入籤號'),
+                          label: Text(l10n.manualInput),
                         ),
                       ],
                     ),
@@ -338,7 +345,7 @@ class _PhotoRecognitionScreenState
               Center(
                 child: TextButton(
                   onPressed: _openManualInput,
-                  child: const Text('略過拍照，直接手動輸入 ›'),
+                  child: Text(l10n.skipToManual),
                 ),
               ),
             ],
@@ -369,6 +376,7 @@ class _ResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final lot = resolved.lot;
     final lowConfidence = confidence < 0.6;
 
@@ -384,11 +392,11 @@ class _ResultCard extends StatelessWidget {
                     color: AppColors.gold),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text('辨識結果',
+                  child: Text(l10n.recognitionResult,
                       style: theme.textTheme.titleMedium
                           ?.copyWith(letterSpacing: 2)),
                 ),
-                Text('信心 ${(confidence * 100).round()}%',
+                Text(l10n.confidence((confidence * 100).round()),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: lowConfidence
                           ? AppColors.vermilion
@@ -406,21 +414,22 @@ class _ResultCard extends StatelessWidget {
                 )),
             if (lot.title.isNotEmpty) ...[
               const SizedBox(height: 4),
-              Text('籤題：${lot.title}', style: theme.textTheme.bodyMedium),
+              Text(l10n.allusionTitle(lot.title),
+                  style: theme.textTheme.bodyMedium),
             ],
             const SizedBox(height: 8),
             Text(lot.poemText,
                 style: theme.textTheme.bodyMedium?.copyWith(height: 1.8)),
             if (resolved.note != null) ...[
               const SizedBox(height: 8),
-              Text('※ ${resolved.note}',
+              Text(l10n.noteLine(resolved.note!),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   )),
             ],
             if (lowConfidence) ...[
               const SizedBox(height: 8),
-              Text('※ 辨識信心較低，請核對籤號是否正確',
+              Text(l10n.lowConfidenceNote,
                   style: theme.textTheme.bodySmall
                       ?.copyWith(color: AppColors.vermilion)),
             ],
@@ -430,7 +439,7 @@ class _ResultCard extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: onCorrect,
-                    child: const Text('不對，修正'),
+                    child: Text(l10n.correct),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -438,7 +447,7 @@ class _ResultCard extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: onCast,
                     icon: const Icon(Icons.casino_outlined, size: 18),
-                    label: const Text('擲筊請示'),
+                    label: Text(l10n.castConsult),
                   ),
                 ),
               ],
@@ -447,7 +456,7 @@ class _ResultCard extends StatelessWidget {
             TextButton(
               onPressed: onConfirm,
               child: Text(
-                '不擲筊，直接解籤',
+                l10n.skipCastRead,
                 style: TextStyle(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
                 ),

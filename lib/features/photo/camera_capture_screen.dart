@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'widgets/framing_overlay.dart';
 
 /// A full-screen live viewfinder for capturing a lot photo in-app, with a
@@ -20,7 +21,21 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen>
   bool _initializing = true;
   bool _capturing = false;
   bool _torchOn = false;
-  String? _error;
+
+  /// Error kind, resolved to localized text in [build] ('' fields cannot use
+  /// Localizations from initState). One of: 'noCamera', a CameraException
+  /// code, or 'generic'.
+  String? _errorCode;
+
+  String _errorText(AppLocalizations l10n) => switch (_errorCode) {
+        'noCamera' => l10n.noCameraFound,
+        'CameraAccessDenied' ||
+        'CameraAccessDeniedWithoutPrompt' ||
+        'CameraAccessRestricted' =>
+          l10n.cameraAccessDenied,
+        'generic' || null => l10n.cameraStartFailed,
+        _ => l10n.cameraStartFailedCode(_errorCode!),
+      };
 
   @override
   void initState() {
@@ -53,12 +68,12 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen>
   Future<void> _setUp() async {
     setState(() {
       _initializing = true;
-      _error = null;
+      _errorCode = null;
     });
     try {
       final cameras = await availableCameras();
       if (cameras.isEmpty) {
-        throw CameraException('noCamera', '找不到可用的相機');
+        throw CameraException('noCamera', 'no camera');
       }
       final back = cameras.firstWhere(
         (c) => c.lensDirection == CameraLensDirection.back,
@@ -84,20 +99,13 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen>
       if (!mounted) return;
       setState(() {
         _initializing = false;
-        _error = switch (e.code) {
-          'CameraAccessDenied' ||
-          'CameraAccessDeniedWithoutPrompt' ||
-          'CameraAccessRestricted' =>
-            '無法使用相機——請在系統設定中允許本 App 存取相機。',
-          'noCamera' => '找不到可用的相機。',
-          _ => '相機啟動失敗（${e.code}）。',
-        };
+        _errorCode = e.code; // resolved to localized text in build()
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         _initializing = false;
-        _error = '相機啟動失敗，請改用相簿或手動輸入。';
+        _errorCode = 'generic';
       });
     }
   }
@@ -126,18 +134,19 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen>
       if (!mounted) return;
       setState(() => _capturing = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('拍攝失敗，請再試一次')),
+        SnackBar(content: Text(AppLocalizations.of(context).captureFailed)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: _error != null
-            ? _ErrorView(message: _error!, onRetry: _setUp)
+        child: _errorCode != null
+            ? _ErrorView(message: _errorText(l10n), onRetry: _setUp)
             : _initializing || _controller == null
                 ? const Center(
                     child: CircularProgressIndicator(color: AppColors.gold),
@@ -171,6 +180,7 @@ class _Viewfinder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -199,7 +209,7 @@ class _Viewfinder extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.close, color: Colors.white),
-                tooltip: '返回',
+                tooltip: l10n.back,
                 onPressed: () => Navigator.of(context).pop(),
               ),
               IconButton(
@@ -207,7 +217,7 @@ class _Viewfinder extends StatelessWidget {
                   torchOn ? Icons.flashlight_on : Icons.flashlight_off,
                   color: torchOn ? AppColors.gold : Colors.white,
                 ),
-                tooltip: '補光',
+                tooltip: l10n.torch,
                 onPressed: onToggleTorch,
               ),
             ],
@@ -260,6 +270,7 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
@@ -283,10 +294,10 @@ class _ErrorView extends StatelessWidget {
                   foregroundColor: Colors.white,
                   side: const BorderSide(color: Colors.white54),
                 ),
-                child: const Text('返回'),
+                child: Text(l10n.back),
               ),
               const SizedBox(width: 12),
-              FilledButton(onPressed: onRetry, child: const Text('重試')),
+              FilledButton(onPressed: onRetry, child: Text(l10n.retry)),
             ],
           ),
         ],

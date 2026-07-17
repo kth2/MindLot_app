@@ -5,9 +5,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/lot.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
 import '../jiao_bei.dart';
 import 'moon_block.dart';
+
+String _jiaoName(AppLocalizations l10n, JiaoResult r) => switch (r) {
+      JiaoResult.sacred => l10n.jiaoSacredName,
+      JiaoResult.laughing => l10n.jiaoLaughingName,
+      JiaoResult.negative => l10n.jiaoNegativeName,
+    };
+
+String _jiaoMessage(AppLocalizations l10n, JiaoResult r) => switch (r) {
+      JiaoResult.sacred => l10n.jiaoSacredMsg,
+      JiaoResult.laughing => l10n.jiaoLaughingMsg,
+      JiaoResult.negative => l10n.jiaoNegativeMsg,
+    };
 
 /// What the user chose to do at the end of the 擲筊 ritual.
 enum JiaoOutcome {
@@ -29,7 +42,7 @@ Future<JiaoOutcome?> showJiaoBeiSheet(
   WidgetRef ref, {
   required Lot lot,
   required String setName,
-  String redrawLabel = '重新求籤',
+  required String redrawLabel,
 }) {
   return showModalBottomSheet<JiaoOutcome>(
     context: context,
@@ -107,6 +120,7 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final result = _throw?.result;
     final confirmed = result == JiaoResult.sacred;
 
@@ -119,11 +133,11 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('擲筊請示',
+          Text(l10n.castConsult,
               style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 4)),
           const SizedBox(height: 6),
-          Text('求得「${widget.setName}・${widget.lot.label}」\n'
-              '誠心默念所問，擲筊請示神明是否應允此籤',
+          Text('${l10n.jiaoAsk(widget.setName, widget.lot.label)}\n'
+              '${l10n.jiaoAskHint}',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
                 height: 1.7,
@@ -162,7 +176,7 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: _casting
-                ? Text('擲筊中⋯',
+                ? Text(l10n.jiaoCasting,
                     key: const ValueKey('casting'),
                     style: theme.textTheme.titleMedium
                         ?.copyWith(letterSpacing: 4))
@@ -180,13 +194,13 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
               onPressed: () =>
                   Navigator.of(context).pop(JiaoOutcome.confirmed),
               icon: const Icon(Icons.auto_stories_outlined),
-              label: const Text('恭請解籤'),
+              label: Text(l10n.jiaoRead),
             )
           else
             FilledButton.icon(
               onPressed: _casting ? null : _cast,
               icon: const Icon(Icons.casino_outlined),
-              label: Text(_throw == null ? '擲筊' : '再擲一次'),
+              label: Text(_throw == null ? l10n.cast : l10n.castAgain),
             ),
           const SizedBox(height: 8),
           Row(
@@ -203,7 +217,7 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
                   onPressed: () =>
                       Navigator.of(context).pop(JiaoOutcome.confirmed),
                   child: Text(
-                    '仍要解籤',
+                    l10n.readAnyway,
                     style: TextStyle(
                       color: theme.colorScheme.onSurface
                           .withValues(alpha: 0.55),
@@ -258,6 +272,7 @@ class _ResultLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final color = switch (result) {
       JiaoResult.sacred => AppColors.vermilion,
       JiaoResult.laughing => AppColors.gold,
@@ -266,19 +281,19 @@ class _ResultLabel extends StatelessWidget {
     return Column(
       key: ValueKey(result),
       children: [
-        Text(result.name,
+        Text(_jiaoName(l10n, result),
             style: theme.textTheme.headlineSmall?.copyWith(
               color: color,
               fontWeight: FontWeight.w700,
               letterSpacing: 4,
             )),
         const SizedBox(height: 6),
-        Text(result.message,
+        Text(_jiaoMessage(l10n, result),
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(height: 1.6)),
         if (result == JiaoResult.sacred && streak >= 3) ...[
           const SizedBox(height: 6),
-          Text('連得三聖筊，心誠格天！',
+          Text(l10n.threeSacred,
               style: theme.textTheme.bodySmall
                   ?.copyWith(color: AppColors.vermilion, letterSpacing: 2)),
         ],

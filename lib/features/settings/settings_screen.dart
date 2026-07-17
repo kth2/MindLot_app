@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
 import '../../services/ai/ai_config.dart';
 
-/// 設定 — theme, API key, and AI model selection.
+/// 設定 — theme, language, API key, and AI model selection.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+/// A locale option; null means "follow the system".
+class _LangOption {
+  const _LangOption(this.locale, this.label);
+  final Locale? locale;
+  final String label; // shown in its own script, not localized
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
@@ -32,27 +40,39 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
 
+    final langOptions = <_LangOption>[
+      _LangOption(null, l10n.themeSystem),
+      const _LangOption(Locale('en'), 'English'),
+      const _LangOption(
+          Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+          '繁體中文'),
+      const _LangOption(
+          Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+          '简体中文'),
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text('設定')),
+      appBar: AppBar(title: Text(l10n.settings)),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           // ------- appearance -------
-          Text('外觀', style: theme.textTheme.titleMedium),
+          Text(l10n.appearance, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Card(
             child: Column(
               children: ThemeMode.values.map((mode) {
-                const names = {
-                  ThemeMode.system: '跟隨系統',
-                  ThemeMode.light: '日殿（淺色）',
-                  ThemeMode.dark: '夜殿（深色）',
+                final label = switch (mode) {
+                  ThemeMode.system => l10n.themeSystem,
+                  ThemeMode.light => l10n.themeLight,
+                  ThemeMode.dark => l10n.themeDark,
                 };
                 return RadioListTile<ThemeMode>(
-                  title: Text(names[mode]!),
+                  title: Text(label),
                   value: mode,
                   groupValue: settings.themeMode,
                   onChanged: (m) {
@@ -64,8 +84,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 24),
 
+          // ------- language -------
+          Text(l10n.language, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Card(
+            child: Column(
+              children: langOptions.map((opt) {
+                return RadioListTile<String>(
+                  title: Text(opt.label),
+                  value: localeToTag(opt.locale),
+                  groupValue: localeToTag(settings.locale),
+                  onChanged: (_) => notifier.setLocale(opt.locale),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // ------- AI -------
-          Text('AI 服務', style: theme.textTheme.titleMedium),
+          Text(l10n.aiService, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Card(
             child: Padding(
@@ -79,18 +116,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     decoration: InputDecoration(
                       labelText: 'Gemini API Key',
                       hintText: settings.aiConfig.isConfigured
-                          ? '已設定 ✓'
-                          : '請貼上您的 API 金鑰',
-                      helperText: '金鑰僅儲存在您的裝置上',
+                          ? l10n.apiKeySet
+                          : l10n.apiKeyHint,
+                      helperText: l10n.apiKeyHelper,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12)),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.save_outlined),
-                        tooltip: '儲存',
+                        tooltip: l10n.save,
                         onPressed: () {
                           notifier.setApiKey(_apiKeyController.text);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('已儲存 API 金鑰')),
+                            SnackBar(content: Text(l10n.apiKeySaved)),
                           );
                         },
                       ),
@@ -101,7 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     // ignore: deprecated_member_use
                     value: settings.visionModel,
                     decoration: InputDecoration(
-                      labelText: '影像辨識模型',
+                      labelText: l10n.visionModel,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12)),
                     ),
@@ -118,7 +155,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     // ignore: deprecated_member_use
                     value: settings.textModel,
                     decoration: InputDecoration(
-                      labelText: '解籤模型',
+                      labelText: l10n.textModel,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12)),
                     ),
@@ -137,17 +174,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 24),
 
           // ------- about -------
-          Text('關於', style: theme.textTheme.titleMedium),
+          Text(l10n.about, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                '心籤通 MindLot v0.1.0\n\n'
-                '籤詩文化源遠流長，本應用以敬重之心呈現傳統籤詩，'
-                '並以 AI 輔助解讀。籤解內容僅供參考與心靈陪伴，'
-                '不構成醫療、法律或財務建議；重大決定請諮詢專業人士。\n\n'
-                '願您心誠所至，平安喜樂。',
+                '${l10n.appName} · MindLot v0.1.0\n\n${l10n.aboutBody}',
                 style: theme.textTheme.bodyMedium?.copyWith(height: 1.8),
               ),
             ),

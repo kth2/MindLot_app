@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/divination_record.dart';
 import '../../data/models/lot.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/history_provider.dart';
 import '../../providers/providers.dart';
 
@@ -15,25 +16,26 @@ class HistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('籤記'),
-          bottom: const TabBar(
-            tabs: [Tab(text: '全部'), Tab(text: '收藏')],
+          title: Text(l10n.historyTitle),
+          bottom: TabBar(
+            tabs: [Tab(text: l10n.tabAll), Tab(text: l10n.favorite)],
             indicatorColor: AppColors.vermilion,
           ),
         ),
         body: ref.watch(historyProvider).when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('載入失敗：$e')),
+              error: (e, _) => Center(child: Text(l10n.loadError(e))),
               data: (records) => TabBarView(
                 children: [
-                  _RecordList(records: records),
+                  _RecordList(records: records, emptyHint: l10n.emptyHistory),
                   _RecordList(
                     records: records.where((r) => r.isFavorite).toList(),
-                    emptyHint: '尚無收藏的籤\n在籤詩頁點擊 ♥ 即可收藏',
+                    emptyHint: l10n.emptyFavorites,
                   ),
                 ],
               ),
@@ -46,17 +48,18 @@ class HistoryScreen extends ConsumerWidget {
 class _RecordList extends ConsumerWidget {
   const _RecordList({
     required this.records,
-    this.emptyHint = '尚無籤記\n求一支籤開始吧',
+    required this.emptyHint,
   });
 
   final List<DivinationRecord> records;
   final String emptyHint;
 
-  static const _sourceNames = {
-    DivinationSource.photo: '拍照',
-    DivinationSource.draw: '線上',
-    DivinationSource.manual: '手動',
-  };
+  static String _sourceLabel(AppLocalizations l10n, DivinationSource s) =>
+      switch (s) {
+        DivinationSource.photo => l10n.sourcePhoto,
+        DivinationSource.draw => l10n.sourceDraw,
+        DivinationSource.manual => l10n.sourceManual,
+      };
 
   Future<void> _open(
       BuildContext context, WidgetRef ref, DivinationRecord record) async {
@@ -89,6 +92,7 @@ class _RecordList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     if (records.isEmpty) {
       return Center(
         child: Text(emptyHint,
@@ -137,10 +141,10 @@ class _RecordList extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (r.question?.isNotEmpty == true)
-                    Text('問：${r.question}',
+                    Text(l10n.questionPrefix(r.question!),
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                   Text(
-                    '${_formatDate(r.timestamp)}・${_sourceNames[r.source]}',
+                    '${_formatDate(r.timestamp)}・${_sourceLabel(l10n, r.source)}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color:
                           theme.colorScheme.onSurface.withValues(alpha: 0.5),

@@ -19,6 +19,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
 | 🖼️ **Share a lot as an image**: render an elegant temple-style card to PNG and share it via the system sheet | ✅ |
+| 🌐 **Localized UI**: English · 繁體中文 · 简体中文, switchable in Settings or following the device (lot poems stay in their source language) | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
 | 🈯 Multi-set data model: 觀音靈籤 (**100 lots**) · 媽祖六十甲子籤 (**60 lots**, with 五行方位 & 聖意) · 六十甲子籤 (**60 lots**, shares the Mazu poem system) · 黃大仙靈籤 (**100 lots**, with 典故 & 解籤) | ✅ |
 
@@ -87,6 +88,7 @@ lib/
 │   │   ├── gemini_interpretation_service.dart
 │   │   └── prompts.dart                 # all prompt templates, tunable in one place
 │   └── audio/                    # shake + 擲筊 sounds
+├── l10n/                         # AppLocalizations (en/zh-Hant/zh-Hans), hand-rolled
 ├── providers/                    # Riverpod wiring (settings, history, DI)
 └── features/                     # one folder per screen
     ├── home/
@@ -101,6 +103,22 @@ lib/
 **Switching AI providers**: implement `VisionService` + `InterpretationService`
 and change two bindings in `lib/providers/providers.dart`. The Gemini model id
 itself (1.5 Flash / 1.5 Pro / 2.0 Flash) is switchable at runtime in Settings.
+
+**Localization** is hand-rolled (no `gen_l10n` codegen) in
+`lib/l10n/app_localizations.dart`: a typed `AppLocalizations` base with three
+subclasses (en / zh-Hant / zh-Hans) plus a `LocalizationsDelegate`, wired into
+`MaterialApp` in `app.dart`. Only UI chrome is localized — lot poems and
+readings stay in their source Chinese, and the AI interpretation `category` is
+kept Chinese so the (Chinese) prompt reads naturally. The zh-Hans strings are
+derived from zh-Hant with OpenCC; regenerate the file after editing strings:
+
+```bash
+python3 tool/gen_l10n.py   # needs: pip install opencc-python-reimplemented
+```
+
+Edit the `SIMPLE` / `METHODS` tables in `tool/gen_l10n.py` (authoring zh-Hant +
+en); zh-Hans is produced automatically. Known gap: AI-service error messages in
+`gemini_client.dart` are still zh-only.
 
 ### Photo-recognition pipeline
 
@@ -197,7 +215,9 @@ source file.
 - [x] 擲筊 confirmation flow (moon blocks: 聖筊/笑筊/陰筊) on both draw & photo flows
 - [x] In-app live viewfinder with the `camera` package (framing overlay + torch)
 - [x] Share a lot card as an image (RepaintBoundary → PNG → `share_plus`)
-- [ ] i18n (zh-TW / zh-CN / en)
+- [x] i18n — en / zh-Hant / zh-Hans UI, switchable in Settings
+- [ ] Localize AI-service error strings (currently zh-only; needs an
+      error-code refactor of `gemini_client`)
 
 ## 📚 Acknowledgements
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/lot.dart';
+import '../../../l10n/app_localizations.dart';
 import 'poem_display.dart';
 
 /// A self-contained, printable lot card rendered to PNG for sharing.
@@ -28,6 +29,7 @@ class LotShareCard extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final theme = Theme.of(context);
+          final l10n = AppLocalizations.of(context);
           return Container(
             width: width,
             decoration: BoxDecoration(
@@ -43,7 +45,7 @@ class LotShareCard extends StatelessWidget {
                 // ---- header: brand + seal ----
                 Row(
                   children: [
-                    Text('心籤通 · MindLot',
+                    Text('${l10n.appName} · MindLot',
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: AppColors.gold,
                           letterSpacing: 2,
@@ -115,7 +117,7 @@ class LotShareCard extends StatelessWidget {
                 const SizedBox(height: 18),
                 Divider(color: AppColors.gold.withValues(alpha: 0.35)),
                 const SizedBox(height: 8),
-                Text('籤詩乃心之明鏡，指引而非定命',
+                Text(l10n.appFooter,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: AppColors.inkSoft,
                       letterSpacing: 2,

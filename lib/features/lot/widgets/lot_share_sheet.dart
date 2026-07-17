@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../data/models/lot.dart';
+import '../../../l10n/app_localizations.dart';
 import 'lot_share_card.dart';
 
 /// Shows a preview of the shareable lot card and lets the user export it as a
@@ -41,6 +42,7 @@ class _LotShareSheetState extends State<_LotShareSheet> {
 
   Future<void> _share() async {
     if (_sharing) return;
+    final l10n = AppLocalizations.of(context);
     setState(() => _sharing = true);
     try {
       final boundary = _boundaryKey.currentContext!.findRenderObject()
@@ -59,12 +61,12 @@ class _LotShareSheetState extends State<_LotShareSheet> {
 
       await Share.shareXFiles(
         [XFile(file.path, mimeType: 'image/png')],
-        text: '「${widget.setName}・${widget.lot.label}」— 心籤通 MindLot',
+        text: '${widget.setName}・${widget.lot.label} — ${l10n.appName}',
       );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('分享失敗，請再試一次')),
+          SnackBar(content: Text(l10n.shareFailed)),
         );
       }
     } finally {
@@ -75,6 +77,7 @@ class _LotShareSheetState extends State<_LotShareSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.only(
         left: 20,
@@ -84,7 +87,7 @@ class _LotShareSheetState extends State<_LotShareSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('分享此籤',
+          Text(l10n.shareThisLot,
               style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 4)),
           const SizedBox(height: 16),
           Flexible(
@@ -115,7 +118,7 @@ class _LotShareSheetState extends State<_LotShareSheet> {
                         strokeWidth: 2, color: Colors.white),
                   )
                 : const Icon(Icons.ios_share),
-            label: Text(_sharing ? '準備中⋯' : '分享圖片'),
+            label: Text(_sharing ? l10n.preparing : l10n.shareImage),
           ),
         ],
       ),

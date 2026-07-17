@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/divination_record.dart';
 import '../../data/models/lot.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/history_provider.dart';
 import '../../providers/providers.dart';
 import 'widgets/lot_share_sheet.dart';
@@ -119,6 +120,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final isFavorite = ref.watch(historyProvider).valueOrNull
             ?.where((r) => r.id == _recordId)
             .firstOrNull
@@ -131,7 +133,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.ios_share),
-            tooltip: '分享此籤',
+            tooltip: l10n.shareThisLot,
             onPressed: () => showLotShareSheet(
               context,
               lot: _lot,
@@ -143,7 +145,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
               isFavorite ? Icons.favorite : Icons.favorite_border,
               color: isFavorite ? AppColors.vermilion : null,
             ),
-            tooltip: '收藏',
+            tooltip: l10n.favorite,
             onPressed: () =>
                 ref.read(historyProvider.notifier).toggleFavorite(_recordId),
           ),
@@ -200,7 +202,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
 
               if (_lot.isExternal) ...[
                 const SizedBox(height: 10),
-                Text('※ 此籤種尚未收錄本地籤庫，以下解讀由 AI 依籤詩原文推敲。',
+                Text(l10n.externalAiNote,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color:
                           theme.colorScheme.onSurface.withValues(alpha: 0.5),
@@ -209,33 +211,38 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
 
               // ------- classical readings -------
               if (_lot.poemTranslation.isNotEmpty)
-                _Section(title: '白話淺釋', child: Text(_lot.poemTranslation)),
+                _Section(
+                    title: l10n.sectionPlain,
+                    child: Text(_lot.poemTranslation)),
               if (_lot.allusion.isNotEmpty)
-                _Section(title: '典故', child: Text(_lot.allusion)),
+                _Section(title: l10n.sectionAllusion, child: Text(_lot.allusion)),
               if (_lot.meaning.isNotEmpty)
                 _Section(
                   // 六十甲子系統 stores per-topic 聖意 rather than a 解曰 essay.
-                  title: _lot.sexagenary != null ? '聖意' : '解曰',
+                  title: _lot.sexagenary != null
+                      ? l10n.sectionShengyi
+                      : l10n.sectionJieyue,
                   child: Text(_lot.meaning),
                 ),
 
               // ------- aspects -------
               if (_lot.aspects.isNotEmpty)
                 _Section(
-                  title: '六事指引',
+                  title: l10n.sectionAspects,
                   child: Column(
-                    children: kAspectNames.entries
-                        .where((e) => _lot.aspects.containsKey(e.key))
-                        .map((e) => Padding(
+                    children: kAspectNames.keys
+                        .where((k) => _lot.aspects.containsKey(k))
+                        .map((k) => Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _Badge(
-                                      text: e.value, color: AppColors.gold),
+                                      text: l10n.aspectName(k),
+                                      color: AppColors.gold),
                                   const SizedBox(width: 10),
                                   Expanded(
-                                    child: Text(_lot.aspects[e.key]!,
+                                    child: Text(_lot.aspects[k]!,
                                         style: theme.textTheme.bodyMedium
                                             ?.copyWith(height: 1.6)),
                                   ),
@@ -250,11 +257,11 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
               const SizedBox(height: 8),
               const Divider(),
               const SizedBox(height: 8),
-              Text('請示解籤',
+              Text(l10n.askReadingTitle,
                   style:
                       theme.textTheme.titleMedium?.copyWith(letterSpacing: 2)),
               const SizedBox(height: 4),
-              Text('告訴解籤師您的心事，獲得專屬於您的籤解',
+              Text(l10n.askReadingSubtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   )),
@@ -262,12 +269,14 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: kAspectNames.values
-                    .map((name) => ChoiceChip(
-                          label: Text(name),
-                          selected: _selectedCategory == name,
+                // Label is localized; the stored category stays Chinese so the
+                // (Chinese) interpretation prompt reads naturally.
+                children: kAspectNames.entries
+                    .map((e) => ChoiceChip(
+                          label: Text(l10n.aspectName(e.key)),
+                          selected: _selectedCategory == e.value,
                           onSelected: (sel) => setState(
-                              () => _selectedCategory = sel ? name : null),
+                              () => _selectedCategory = sel ? e.value : null),
                         ))
                     .toList(),
               ),
@@ -278,7 +287,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
                 minLines: 2,
                 maxLength: 200,
                 decoration: InputDecoration(
-                  hintText: '例如：我正在考慮換工作，這個時機合適嗎？',
+                  hintText: l10n.questionHint,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
@@ -294,7 +303,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
                             strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(_interpreting ? '解籤師沉思中⋯' : '請 AI 解籤'),
+                label: Text(_interpreting ? l10n.interpreting : l10n.askAi),
               ),
 
               if (_error != null) ...[
@@ -318,7 +327,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
                             const Icon(Icons.temple_buddhist_outlined,
                                 color: AppColors.gold, size: 20),
                             const SizedBox(width: 8),
-                            Text('解籤師の話',
+                            Text(l10n.interpreterVoice,
                                 style: theme.textTheme.titleMedium
                                     ?.copyWith(letterSpacing: 2)),
                           ],
@@ -334,7 +343,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
                 const SizedBox(height: 8),
                 Center(
                   child: Text(
-                    '籤解僅供參考，重大決定請諮詢專業意見',
+                    l10n.readingDisclaimer,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color:
                           theme.colorScheme.onSurface.withValues(alpha: 0.4),
