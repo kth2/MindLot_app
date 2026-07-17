@@ -62,6 +62,27 @@ share these keys)
 generated default is lower. The CAMERA permission is merged in by the plugin;
 `image_picker` needs no manifest changes on API 33+.
 
+### App icon & launcher name (萬通解籤)
+
+The platform folders (`android/`, `ios/`) are generated locally, so branding
+is applied there after `flutter create .`:
+
+```bash
+# Icon (config lives in pubspec.yaml → flutter_launcher_icons):
+dart run flutter_launcher_icons
+```
+
+The source art is `assets/icon/app_icon.png` (gold 籤 on vermilion). The
+launcher **label** is set once by hand in
+`android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<application android:label="萬通解籤" ... >
+```
+
+(Consider committing your generated `android/` folder so this is version
+controlled — it isn't tracked in this repo.)
+
 ### Tests
 
 ```bash

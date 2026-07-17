@@ -48,6 +48,21 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+  # Launcher-icon generator (run once locally after pulling):
+  #   flutter pub get && dart run flutter_launcher_icons
+  flutter_launcher_icons: ^0.14.4
+
+# Generates the Android launcher icons from a single source image.
+# (The launcher *label* lives in android/app/src/main/AndroidManifest.xml —
+# set android:label="萬通解籤" there; that folder isn't tracked in this repo.)
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: false # only the android platform is generated locally so far
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#B3402A"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+
 flutter:
   uses-material-design: true
 
