@@ -104,7 +104,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
           ?.where((r) => r.id == _recordId)
           .firstOrNull;
       if (record != null) {
-        ref.read(historyProvider.notifier).update(record.copyWith(
+        ref.read(historyProvider.notifier).updateRecord(record.copyWith(
               question: _questionController.text.trim(),
               category: _selectedCategory,
               interpretation: text,

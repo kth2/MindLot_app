@@ -16,7 +16,8 @@ class HistoryNotifier extends AsyncNotifier<List<DivinationRecord>> {
     await ref.read(historyRepositoryProvider).save(updated);
   }
 
-  Future<void> update(DivinationRecord record) async {
+  // NB: not named `update` — that collides with AsyncNotifier.update.
+  Future<void> updateRecord(DivinationRecord record) async {
     final current = state.valueOrNull ?? const <DivinationRecord>[];
     final updated =
         current.map((r) => r.id == record.id ? record : r).toList();

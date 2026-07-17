@@ -54,15 +54,15 @@ class _MoonBlockPainter extends CustomPainter {
       canvas.drawPath(
         crescent,
         Paint()
-          ..shader = RadialGradient(
-            center: const Alignment(-0.2, -0.3),
+          ..shader = const RadialGradient(
+            center: Alignment(-0.2, -0.3),
             radius: 0.9,
             colors: [
               AppColors.vermilion,
               AppColors.vermilionDeep,
-              const Color(0xFF5E2016),
+              Color(0xFF5E2016),
             ],
-            stops: const [0.0, 0.6, 1.0],
+            stops: [0.0, 0.6, 1.0],
           ).createShader(Rect.fromLTWH(0, 0, w, h)),
       );
       // glossy highlight

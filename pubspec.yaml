@@ -4,7 +4,7 @@ publish_to: "none"
 version: 0.1.0+1
 
 environment:
-  sdk: ">=3.7.0 <4.0.0" # Flutter 3.29+
+  sdk: ">=3.8.0 <4.0.0" # Flutter 3.32+ (RadioGroup)
 
 dependencies:
   flutter:

@@ -64,22 +64,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Text(l10n.appearance, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Card(
-            child: Column(
-              children: ThemeMode.values.map((mode) {
-                final label = switch (mode) {
-                  ThemeMode.system => l10n.themeSystem,
-                  ThemeMode.light => l10n.themeLight,
-                  ThemeMode.dark => l10n.themeDark,
-                };
-                return RadioListTile<ThemeMode>(
-                  title: Text(label),
-                  value: mode,
-                  groupValue: settings.themeMode,
-                  onChanged: (m) {
-                    if (m != null) notifier.setThemeMode(m);
-                  },
-                );
-              }).toList(),
+            child: RadioGroup<ThemeMode>(
+              groupValue: settings.themeMode,
+              onChanged: (m) {
+                if (m != null) notifier.setThemeMode(m);
+              },
+              child: Column(
+                children: ThemeMode.values.map((mode) {
+                  final label = switch (mode) {
+                    ThemeMode.system => l10n.themeSystem,
+                    ThemeMode.light => l10n.themeLight,
+                    ThemeMode.dark => l10n.themeDark,
+                  };
+                  return RadioListTile<ThemeMode>(
+                    title: Text(label),
+                    value: mode,
+                  );
+                }).toList(),
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -88,15 +90,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Text(l10n.language, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Card(
-            child: Column(
-              children: langOptions.map((opt) {
-                return RadioListTile<String>(
-                  title: Text(opt.label),
-                  value: localeToTag(opt.locale),
-                  groupValue: localeToTag(settings.locale),
-                  onChanged: (_) => notifier.setLocale(opt.locale),
-                );
-              }).toList(),
+            child: RadioGroup<String>(
+              groupValue: localeToTag(settings.locale),
+              onChanged: (tag) => notifier.setLocale(localeFromTag(tag)),
+              child: Column(
+                children: langOptions.map((opt) {
+                  return RadioListTile<String>(
+                    title: Text(opt.label),
+                    value: localeToTag(opt.locale),
+                  );
+                }).toList(),
+              ),
             ),
           ),
           const SizedBox(height: 24),

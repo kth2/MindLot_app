@@ -93,11 +93,11 @@ void main() {
       final seen = <String>{};
       for (final lot in lots) {
         expect(lot.poem.length, 4, reason: '${lot.label} poem');
-        expect(lot.sexagenary, isNotNull, reason: '${lot.label}');
+        expect(lot.sexagenary, isNotNull, reason: lot.label);
         expect(lot.label, '${lot.sexagenary}籤');
         expect(lot.wuxing, isNotEmpty, reason: '${lot.label} 五行');
         expect(lot.meaning, isNotEmpty, reason: '${lot.label} 聖意');
-        expect(lot.poemTranslation, isNotEmpty, reason: '${lot.label}');
+        expect(lot.poemTranslation, isNotEmpty, reason: lot.label);
         expect(lot.aspects.keys, containsAll(
             ['career', 'love', 'wealth', 'health', 'study', 'travel']));
         expect(seen.add(lot.sexagenary!), isTrue,
