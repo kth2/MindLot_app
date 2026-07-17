@@ -12,16 +12,32 @@ class AiConfig {
 
   static const envApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
-  static const defaultVisionModel = 'gemini-1.5-flash';
-  static const defaultTextModel = 'gemini-1.5-flash';
+  // Free-tier Gemini models. Flash is stronger (better OCR + interpretation);
+  // Flash-Lite is faster/cheaper for high throughput.
+  static const defaultVisionModel = 'gemini-3.5-flash';
+  static const defaultTextModel = 'gemini-3.5-flash';
 
   /// Models offered in Settings. Any Gemini model id works — switching
   /// providers entirely only requires a new [VisionService] implementation.
   static const availableModels = [
-    'gemini-1.5-flash',
-    'gemini-1.5-pro',
-    'gemini-2.0-flash',
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
   ];
+
+  /// Returns [model] if it is a known option, else the vision default —
+  /// guards against a stale model id persisted from an older build.
+  static String sanitizeModel(String? model) =>
+      (model != null && availableModels.contains(model))
+          ? model
+          : defaultVisionModel;
+
+  /// Human-friendly names for the Settings picker (falls back to the id).
+  static const _modelLabels = {
+    'gemini-3.5-flash': 'Gemini 3.5 Flash',
+    'gemini-3.1-flash-lite': 'Gemini 3.1 Flash-Lite',
+  };
+
+  static String modelLabel(String id) => _modelLabels[id] ?? id;
 
   final String apiKey;
   final String visionModel;

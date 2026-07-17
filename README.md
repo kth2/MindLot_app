@@ -102,7 +102,7 @@ lib/
 
 **Switching AI providers**: implement `VisionService` + `InterpretationService`
 and change two bindings in `lib/providers/providers.dart`. The Gemini model id
-itself (1.5 Flash / 1.5 Pro / 2.0 Flash) is switchable at runtime in Settings.
+itself (Gemini 3.5 Flash / 3.1 Flash-Lite) is switchable at runtime in Settings.
 
 **Localization** is hand-rolled (no `gen_l10n` codegen) in
 `lib/l10n/app_localizations.dart`: a typed `AppLocalizations` base with three

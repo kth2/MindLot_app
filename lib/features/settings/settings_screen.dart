@@ -148,7 +148,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                     items: AiConfig.availableModels
                         .map((m) =>
-                            DropdownMenuItem(value: m, child: Text(m)))
+                            DropdownMenuItem(value: m, child: Text(AiConfig.modelLabel(m))))
                         .toList(),
                     onChanged: (m) {
                       if (m != null) notifier.setVisionModel(m);
@@ -165,7 +165,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                     items: AiConfig.availableModels
                         .map((m) =>
-                            DropdownMenuItem(value: m, child: Text(m)))
+                            DropdownMenuItem(value: m, child: Text(AiConfig.modelLabel(m))))
                         .toList(),
                     onChanged: (m) {
                       if (m != null) notifier.setTextModel(m);

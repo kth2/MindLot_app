@@ -87,9 +87,10 @@ class SettingsNotifier extends Notifier<SettingsState> {
       ),
       locale: localeFromTag(prefs.getString(_kLocale)),
       apiKeyOverride: prefs.getString(_kApiKey) ?? '',
-      visionModel:
-          prefs.getString(_kVisionModel) ?? AiConfig.defaultVisionModel,
-      textModel: prefs.getString(_kTextModel) ?? AiConfig.defaultTextModel,
+      // Sanitize so a model id saved by an older build can't crash the
+      // Settings dropdown (its value must be one of the current items).
+      visionModel: AiConfig.sanitizeModel(prefs.getString(_kVisionModel)),
+      textModel: AiConfig.sanitizeModel(prefs.getString(_kTextModel)),
     );
   }
 
