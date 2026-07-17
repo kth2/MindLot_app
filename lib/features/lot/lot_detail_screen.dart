@@ -8,6 +8,7 @@ import '../../data/models/divination_record.dart';
 import '../../data/models/lot.dart';
 import '../../providers/history_provider.dart';
 import '../../providers/providers.dart';
+import 'widgets/lot_share_sheet.dart';
 import 'widgets/poem_display.dart';
 
 /// Lot detail & AI interpretation — poem, classical reading, aspect guidance,
@@ -128,6 +129,15 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
       appBar: AppBar(
         title: Text(widget.args.setName),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.ios_share),
+            tooltip: '分享此籤',
+            onPressed: () => showLotShareSheet(
+              context,
+              lot: _lot,
+              setName: widget.args.setName,
+            ),
+          ),
           IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,

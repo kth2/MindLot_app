@@ -18,6 +18,7 @@ virtual cylinder — then receive a warm, personalized AI interpretation.
 | 🥮 **擲筊 confirmation**: throw the moon blocks (聖筊/笑筊/陰筊) to ask the deity's approval before reading a lot — on both the draw and photo flows | ✅ |
 | 🤖 **Personalized AI interpretation** for the user's own question (career/love/wealth/health/study/travel) | ✅ |
 | 🗂️ History & favorites (persisted locally) | ✅ |
+| 🖼️ **Share a lot as an image**: render an elegant temple-style card to PNG and share it via the system sheet | ✅ |
 | 🌙 Dark mode（夜殿）/ light mode（日殿）, temple-inspired UI, vertical classical poem layout | ✅ |
 | 🈯 Multi-set data model: 觀音靈籤 (**100 lots**) · 媽祖六十甲子籤 (**60 lots**, with 五行方位 & 聖意) · 六十甲子籤 (**60 lots**, shares the Mazu poem system) · 黃大仙靈籤 (**100 lots**, with 典故 & 解籤) | ✅ |
 
@@ -91,7 +92,8 @@ lib/
     ├── home/
     ├── photo/   # recognition screen + in-app CameraCaptureScreen + framing overlay
     ├── draw/    # cylinder + 擲筊 (moon-block) ritual
-    ├── lot/  history/  settings/
+    ├── lot/     # detail/interpretation + shareable PNG card
+    ├── history/  settings/
 ```
 
 **State management** is classic Riverpod (`Notifier`/`AsyncNotifier`, no codegen).
@@ -194,7 +196,7 @@ source file.
 - [x] Complete 黃大仙靈籤 all 100 lots — **all four registered sets now have data**
 - [x] 擲筊 confirmation flow (moon blocks: 聖筊/笑筊/陰筊) on both draw & photo flows
 - [x] In-app live viewfinder with the `camera` package (framing overlay + torch)
-- [ ] Share a lot card as an image
+- [x] Share a lot card as an image (RepaintBoundary → PNG → `share_plus`)
 - [ ] i18n (zh-TW / zh-CN / en)
 
 ## 📚 Acknowledgements
