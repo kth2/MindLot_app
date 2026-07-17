@@ -162,7 +162,7 @@ abstract class AppLocalizations {
 
 class AppLocalizationsEn extends AppLocalizations {
   @override
-  String get appName => "MindLot";
+  String get appName => "Wantong Jieqian";
   @override
   String get homeMotto => "Oracle lots in your palm";
   @override
@@ -368,7 +368,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get about => "About";
   @override
-  String get aboutBody => "Divination lots carry a long heritage. MindLot presents these traditional poems with respect and adds AI-assisted readings. Interpretations are for reflection and comfort only — they are not medical, legal, or financial advice; consult a professional for important decisions.\n\nMay your sincerity be met with peace and joy.";
+  String get aboutBody => "Divination lots carry a long heritage. This app presents these traditional poems with respect and adds AI-assisted readings. Interpretations are for reflection and comfort only — they are not medical, legal, or financial advice; consult a professional for important decisions.\n\nMay your sincerity be met with peace and joy.";
   @override
   String get shareImage => "Share image";
   @override
@@ -419,7 +419,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
 class AppLocalizationsZhHant extends AppLocalizations {
   @override
-  String get appName => "心籤通";
+  String get appName => "萬通解籤";
   @override
   String get homeMotto => "掌中靈籤，心誠則靈";
   @override
@@ -676,7 +676,7 @@ class AppLocalizationsZhHant extends AppLocalizations {
 
 class AppLocalizationsZhHans extends AppLocalizations {
   @override
-  String get appName => "心签通";
+  String get appName => "万通解签";
   @override
   String get homeMotto => "掌中灵签，心诚则灵";
   @override

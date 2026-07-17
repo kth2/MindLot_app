@@ -184,7 +184,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                '${l10n.appName} · MindLot v0.1.0\n\n${l10n.aboutBody}',
+                '${l10n.appName} v0.1.0\n\n${l10n.aboutBody}',
                 style: theme.textTheme.bodyMedium?.copyWith(height: 1.8),
               ),
             ),

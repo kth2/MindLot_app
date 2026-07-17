@@ -6,7 +6,7 @@ cc = OpenCC('tw2sp')  # Traditional (TW) -> Simplified (with phrase conversion)
 
 # key: (hant, en)   — simple getters
 SIMPLE = {
-  'appName': ('心籤通', 'MindLot'),
+  'appName': ('萬通解籤', 'Wantong Jieqian'),
   'homeMotto': ('掌中靈籤，心誠則靈', 'Oracle lots in your palm'),
   'settings': ('設定', 'Settings'),
   'recentRecords': ('近期籤記', 'Recent lots'),
@@ -142,7 +142,7 @@ SIMPLE = {
                '並以 AI 輔助解讀。籤解內容僅供參考與心靈陪伴，'
                '不構成醫療、法律或財務建議；重大決定請諮詢專業人士。\n\n'
                '願您心誠所至，平安喜樂。',
-               'Divination lots carry a long heritage. MindLot presents these '
+               'Divination lots carry a long heritage. This app presents these '
                'traditional poems with respect and adds AI-assisted readings. '
                'Interpretations are for reflection and comfort only — they are '
                'not medical, legal, or financial advice; consult a professional '

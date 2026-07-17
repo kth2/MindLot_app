@@ -45,7 +45,7 @@ class LotShareCard extends StatelessWidget {
                 // ---- header: brand + seal ----
                 Row(
                   children: [
-                    Text('${l10n.appName} · MindLot',
+                    Text(l10n.appName,
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: AppColors.gold,
                           letterSpacing: 2,
