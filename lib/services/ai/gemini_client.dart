@@ -28,9 +28,7 @@ class GeminiClient {
     bool jsonOutput = false,
   }) async {
     if (!config.isConfigured) {
-      throw const AiServiceException(
-        '尚未設定 API 金鑰，請至「設定」輸入 Gemini API Key。',
-      );
+      throw const AiServiceException(AiErrorCode.notConfigured);
     }
 
     final uri = Uri.parse('$_baseUrl/$model:generateContent');
@@ -74,24 +72,26 @@ class GeminiClient {
           )
           .timeout(const Duration(seconds: 60));
     } catch (e) {
-      throw AiServiceException('網路連線失敗，請稍後再試。($e)');
+      if (e is AiServiceException) rethrow;
+      throw AiServiceException(AiErrorCode.network, detail: '$e');
     }
 
     if (response.statusCode == 429) {
-      throw const AiServiceException('請求過於頻繁，請稍候片刻再試。');
+      throw const AiServiceException(AiErrorCode.rateLimited);
     }
     if (response.statusCode == 400 || response.statusCode == 403) {
-      throw const AiServiceException('API 金鑰無效或權限不足，請至「設定」檢查。');
+      throw const AiServiceException(AiErrorCode.invalidKey);
     }
     if (response.statusCode != 200) {
-      throw AiServiceException('AI 服務暫時無法使用（${response.statusCode}）。');
+      throw AiServiceException(AiErrorCode.serverError,
+          detail: '${response.statusCode}');
     }
 
     final json = jsonDecode(utf8.decode(response.bodyBytes))
         as Map<String, dynamic>;
     final candidates = json['candidates'] as List<dynamic>?;
     if (candidates == null || candidates.isEmpty) {
-      throw const AiServiceException('AI 未能產生回應，請重試。');
+      throw const AiServiceException(AiErrorCode.emptyResponse);
     }
     final content =
         (candidates.first as Map<String, dynamic>)['content']
@@ -102,7 +102,7 @@ class GeminiClient {
             .join() ??
         '';
     if (text.trim().isEmpty) {
-      throw const AiServiceException('AI 回應為空，請重試。');
+      throw const AiServiceException(AiErrorCode.emptyResponse);
     }
     return text;
   }

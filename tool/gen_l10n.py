@@ -151,6 +151,17 @@ SIMPLE = {
   'shareImage': ('分享圖片', 'Share image'),
   'preparing': ('準備中⋯', 'Preparing…'),
   'shareFailed': ('分享失敗，請再試一次', 'Sharing failed — try again'),
+  # AI service errors
+  'aiErrNotConfigured': ('尚未設定 API 金鑰，請至「設定」輸入 Gemini API Key。',
+                         'No API key set — add your Gemini API key in Settings.'),
+  'aiErrNetwork': ('網路連線失敗，請稍後再試。', 'Network error — please try again shortly.'),
+  'aiErrRateLimited': ('請求過於頻繁，請稍候片刻再試。',
+                       'Too many requests — please wait a moment and retry.'),
+  'aiErrInvalidKey': ('API 金鑰無效或權限不足，請至「設定」檢查。',
+                      'Invalid API key or insufficient permission — check Settings.'),
+  'aiErrEmpty': ('AI 未能產生有效回應，請重試。', 'The AI returned no usable response — please retry.'),
+  'aiErrUnknown': ('AI 服務暫時無法使用，請稍後再試。',
+                   'The AI service is temporarily unavailable — please try again later.'),
 }
 
 # key: (params_dart_sig, hant_template, en_template)  — method getters ($param interpolation)
@@ -169,6 +180,8 @@ METHODS = {
   'loadError': ('Object e', '載入失敗：$e', 'Failed to load: $e'),
   'questionPrefix': ('String q', '問：$q', 'Q: $q'),
   'jiaoAsk': ('String set, String label', '求得「$set・$label」', 'Drew “$set・$label”'),
+  'aiErrServer': ('String code', 'AI 服務暫時無法使用（$code）。',
+                  'The AI service is temporarily unavailable ($code).'),
 }
 
 def dq(s):

@@ -126,6 +126,12 @@ abstract class AppLocalizations {
   String get shareImage;
   String get preparing;
   String get shareFailed;
+  String get aiErrNotConfigured;
+  String get aiErrNetwork;
+  String get aiErrRateLimited;
+  String get aiErrInvalidKey;
+  String get aiErrEmpty;
+  String get aiErrUnknown;
 
   String photoLoadError(Object e);
   String cameraOpenError(Object e);
@@ -140,6 +146,7 @@ abstract class AppLocalizations {
   String loadError(Object e);
   String questionPrefix(String q);
   String jiaoAsk(String set, String label);
+  String aiErrServer(String code);
 
   /// Localized aspect label for a canonical aspect key.
   String aspectName(String key) => switch (key) {
@@ -369,6 +376,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get shareFailed => "Sharing failed — try again";
   @override
+  String get aiErrNotConfigured => "No API key set — add your Gemini API key in Settings.";
+  @override
+  String get aiErrNetwork => "Network error — please try again shortly.";
+  @override
+  String get aiErrRateLimited => "Too many requests — please wait a moment and retry.";
+  @override
+  String get aiErrInvalidKey => "Invalid API key or insufficient permission — check Settings.";
+  @override
+  String get aiErrEmpty => "The AI returned no usable response — please retry.";
+  @override
+  String get aiErrUnknown => "The AI service is temporarily unavailable — please try again later.";
+  @override
   String photoLoadError(Object e) => "Could not load photo: $e";
   @override
   String cameraOpenError(Object e) => "Could not open camera: $e";
@@ -394,6 +413,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String questionPrefix(String q) => "Q: $q";
   @override
   String jiaoAsk(String set, String label) => "Drew “$set・$label”";
+  @override
+  String aiErrServer(String code) => "The AI service is temporarily unavailable ($code).";
 }
 
 class AppLocalizationsZhHant extends AppLocalizations {
@@ -612,6 +633,18 @@ class AppLocalizationsZhHant extends AppLocalizations {
   @override
   String get shareFailed => "分享失敗，請再試一次";
   @override
+  String get aiErrNotConfigured => "尚未設定 API 金鑰，請至「設定」輸入 Gemini API Key。";
+  @override
+  String get aiErrNetwork => "網路連線失敗，請稍後再試。";
+  @override
+  String get aiErrRateLimited => "請求過於頻繁，請稍候片刻再試。";
+  @override
+  String get aiErrInvalidKey => "API 金鑰無效或權限不足，請至「設定」檢查。";
+  @override
+  String get aiErrEmpty => "AI 未能產生有效回應，請重試。";
+  @override
+  String get aiErrUnknown => "AI 服務暫時無法使用，請稍後再試。";
+  @override
   String photoLoadError(Object e) => "無法取得照片：$e";
   @override
   String cameraOpenError(Object e) => "無法開啟相機：$e";
@@ -637,6 +670,8 @@ class AppLocalizationsZhHant extends AppLocalizations {
   String questionPrefix(String q) => "問：$q";
   @override
   String jiaoAsk(String set, String label) => "求得「$set・$label」";
+  @override
+  String aiErrServer(String code) => "AI 服務暫時無法使用（$code）。";
 }
 
 class AppLocalizationsZhHans extends AppLocalizations {
@@ -855,6 +890,18 @@ class AppLocalizationsZhHans extends AppLocalizations {
   @override
   String get shareFailed => "分享失败，请再试一次";
   @override
+  String get aiErrNotConfigured => "尚未设置 API 密钥，请至「设置」输入 Gemini API Key。";
+  @override
+  String get aiErrNetwork => "网络连接失败，请稍后再试。";
+  @override
+  String get aiErrRateLimited => "请求过于频繁，请稍候片刻再试。";
+  @override
+  String get aiErrInvalidKey => "API 密钥无效或权限不足，请至「设置」检查。";
+  @override
+  String get aiErrEmpty => "AI 未能产生有效回应，请重试。";
+  @override
+  String get aiErrUnknown => "AI 服务暂时无法使用，请稍后再试。";
+  @override
   String photoLoadError(Object e) => "无法取得照片：$e";
   @override
   String cameraOpenError(Object e) => "无法打开相机：$e";
@@ -880,6 +927,8 @@ class AppLocalizationsZhHans extends AppLocalizations {
   String questionPrefix(String q) => "问：$q";
   @override
   String jiaoAsk(String set, String label) => "求得「$set・$label」";
+  @override
+  String aiErrServer(String code) => "AI 服务暂时无法使用（$code）。";
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {

@@ -9,6 +9,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/lot.dart';
 import '../../data/models/vision_result.dart';
+import '../../l10n/ai_error_text.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/providers.dart';
 import '../draw/widgets/jiao_bei_sheet.dart';
@@ -118,7 +119,7 @@ class _PhotoRecognitionScreenState
       if (!mounted) return;
       setState(() {
         _analyzing = false;
-        _error = e.toString();
+        _error = aiErrorText(l10n, e);
       });
     }
   }

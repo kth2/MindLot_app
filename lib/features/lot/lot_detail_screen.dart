@@ -6,6 +6,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/divination_record.dart';
 import '../../data/models/lot.dart';
+import '../../l10n/ai_error_text.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/history_provider.dart';
 import '../../providers/providers.dart';
@@ -79,6 +80,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
   }
 
   Future<void> _interpret() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _interpreting = true;
       _error = null;
@@ -112,7 +114,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
       if (!mounted) return;
       setState(() {
         _interpreting = false;
-        _error = e.toString();
+        _error = aiErrorText(l10n, e);
       });
     }
   }

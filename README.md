@@ -117,8 +117,9 @@ python3 tool/gen_l10n.py   # needs: pip install opencc-python-reimplemented
 ```
 
 Edit the `SIMPLE` / `METHODS` tables in `tool/gen_l10n.py` (authoring zh-Hant +
-en); zh-Hans is produced automatically. Known gap: AI-service error messages in
-`gemini_client.dart` are still zh-only.
+en); zh-Hans is produced automatically. AI-service failures are localized too:
+`gemini_client` throws `AiServiceException(AiErrorCode.…)` and the UI maps it
+via `l10n/ai_error_text.dart`.
 
 ### Photo-recognition pipeline
 
@@ -216,8 +217,8 @@ source file.
 - [x] In-app live viewfinder with the `camera` package (framing overlay + torch)
 - [x] Share a lot card as an image (RepaintBoundary → PNG → `share_plus`)
 - [x] i18n — en / zh-Hant / zh-Hans UI, switchable in Settings
-- [ ] Localize AI-service error strings (currently zh-only; needs an
-      error-code refactor of `gemini_client`)
+- [x] Localize AI-service error strings (error-code `AiServiceException`
+      → `aiErrorText` at the UI)
 
 ## 📚 Acknowledgements
 

@@ -30,11 +30,40 @@ class AiConfig {
   bool get isConfigured => apiKey.isNotEmpty;
 }
 
+/// Machine-readable reasons an AI call can fail, mapped to localized text
+/// at the UI layer (see `l10n/ai_error_text.dart`).
+enum AiErrorCode {
+  /// No API key configured yet.
+  notConfigured,
+
+  /// Network/transport failure reaching the provider.
+  network,
+
+  /// Rate limited (HTTP 429).
+  rateLimited,
+
+  /// Key rejected or lacks permission (HTTP 400/403).
+  invalidKey,
+
+  /// Any other non-200 server response ([detail] carries the status code).
+  serverError,
+
+  /// The provider returned no usable content.
+  emptyResponse,
+}
+
 /// Thrown when an AI call fails in a way worth showing to the user.
+///
+/// Carries a machine-readable [code] (localized at the UI) plus optional
+/// technical [detail] (status code, underlying error) that is never shown
+/// translated — appended verbatim for diagnostics.
 class AiServiceException implements Exception {
-  const AiServiceException(this.message);
-  final String message;
+  const AiServiceException(this.code, {this.detail});
+
+  final AiErrorCode code;
+  final String? detail;
 
   @override
-  String toString() => message;
+  String toString() =>
+      'AiServiceException(${code.name}${detail != null ? ': $detail' : ''})';
 }
