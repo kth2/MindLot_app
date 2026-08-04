@@ -44,6 +44,18 @@ class MindLotApp extends ConsumerWidget {
             ? const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
             : const Locale('en');
       },
+      // Honour the device font-size setting, but cap it: this UI has wide
+      // letter-spacing and long localized strings, and beyond ~1.3x rows
+      // start to overflow on narrow phones.
+      builder: (context, child) {
+        final mq = MediaQuery.of(context);
+        return MediaQuery(
+          data: mq.copyWith(
+            textScaler: mq.textScaler.clamp(maxScaleFactor: 1.3),
+          ),
+          child: child!,
+        );
+      },
       routerConfig: appRouter,
     );
   }

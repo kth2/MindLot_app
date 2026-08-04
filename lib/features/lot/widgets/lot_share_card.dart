@@ -74,14 +74,14 @@ class LotShareCard extends StatelessWidget {
                 Text(setName,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: AppColors.inkSoft,
-                      letterSpacing: 3,
+                      letterSpacing: scriptSpacing(context, 3),
                     )),
                 const SizedBox(height: 4),
                 Text(lot.label,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: AppColors.vermilion,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 4,
+                      letterSpacing: scriptSpacing(context, 4),
                     )),
                 const SizedBox(height: 8),
                 Wrap(

@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_theme.dart';
 import '../../data/models/divination_record.dart';
 import '../../data/models/lot.dart';
 import '../../l10n/ai_error_text.dart';
@@ -167,7 +168,7 @@ class _LotDetailScreenState extends ConsumerState<LotDetailScreen> {
                         style: theme.textTheme.headlineMedium?.copyWith(
                           color: AppColors.vermilion,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 4,
+                          letterSpacing: scriptSpacing(context, 4),
                         )),
                     const SizedBox(height: 8),
                     Wrap(

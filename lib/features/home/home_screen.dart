@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_theme.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/history_provider.dart';
 
@@ -25,14 +26,23 @@ class HomeScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(l10n.appName,
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 6,
-                        color: AppColors.vermilion,
-                      )),
+                  // Expanded + scaleDown keeps the settings button reachable
+                  // however long the localized app name is.
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(l10n.appName,
+                          maxLines: 1,
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: scriptSpacing(context, 6),
+                            color: AppColors.vermilion,
+                          )),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   IconButton(
                     onPressed: () => context.push('/settings'),
                     icon: const Icon(Icons.settings_outlined),
@@ -43,7 +53,7 @@ class HomeScreen extends ConsumerWidget {
               Text(l10n.homeMotto,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    letterSpacing: 2,
+                    letterSpacing: scriptSpacing(context, 2),
                   )),
               const SizedBox(height: 28),
 
@@ -68,9 +78,12 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(l10n.recentRecords,
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(letterSpacing: 2)),
+                  Flexible(
+                    child: Text(l10n.recentRecords,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            letterSpacing: scriptSpacing(context, 2))),
+                  ),
                   TextButton(
                     onPressed: () => context.push('/history'),
                     child: Text(l10n.viewAll),
@@ -124,9 +137,10 @@ class HomeScreen extends ConsumerWidget {
               Center(
                 child: Text(
                   l10n.appFooter,
+                  textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                    letterSpacing: 2,
+                    letterSpacing: scriptSpacing(context, 2),
                   ),
                 ),
               ),
@@ -182,7 +196,7 @@ class _RiteCard extends StatelessWidget {
                     Text(title,
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          letterSpacing: 3,
+                          letterSpacing: scriptSpacing(context, 3),
                         )),
                     const SizedBox(height: 6),
                     Text(subtitle,

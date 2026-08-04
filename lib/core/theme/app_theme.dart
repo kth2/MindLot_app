@@ -3,6 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
+/// Letter-spacing tuned for the current UI language.
+///
+/// Generous tracking suits square CJK glyphs, but the same value makes Latin
+/// text sprawl — and overflow narrow phones. Returns [cjk] for Chinese, a
+/// much tighter value otherwise.
+double scriptSpacing(BuildContext context, double cjk) =>
+    Localizations.localeOf(context).languageCode == 'zh' ? cjk : cjk * 0.25;
+
 /// Light & dark themes with Noto Serif TC for a classical, engraved feel.
 abstract final class AppTheme {
   static ThemeData get light => _build(

@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../data/models/lot.dart';
 import '../../../l10n/app_localizations.dart';
 import 'lot_share_card.dart';
@@ -88,7 +89,7 @@ class _LotShareSheetState extends State<_LotShareSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(l10n.shareThisLot,
-              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 4)),
+              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: scriptSpacing(context, 4))),
           const SizedBox(height: 16),
           Flexible(
             child: SingleChildScrollView(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../data/models/lot.dart';
 import '../../../data/models/lot_set.dart';
 import '../../../l10n/app_localizations.dart';
@@ -89,7 +90,7 @@ class _ManualInputSheetState extends ConsumerState<_ManualInputSheet> {
         children: [
           Text(l10n.manualInput,
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 3)),
+              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: scriptSpacing(context, 3))),
           const SizedBox(height: 20),
           setsAsync.when(
             loading: () =>

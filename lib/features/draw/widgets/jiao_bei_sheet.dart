@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../data/models/lot.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/providers.dart';
@@ -134,7 +135,7 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(l10n.castConsult,
-              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 4)),
+              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: scriptSpacing(context, 4))),
           const SizedBox(height: 6),
           Text('${l10n.jiaoAsk(widget.setName, widget.lot.label)}\n'
               '${l10n.jiaoAskHint}',
@@ -179,7 +180,7 @@ class _JiaoBeiSheetState extends ConsumerState<_JiaoBeiSheet>
                 ? Text(l10n.jiaoCasting,
                     key: const ValueKey('casting'),
                     style: theme.textTheme.titleMedium
-                        ?.copyWith(letterSpacing: 4))
+                        ?.copyWith(letterSpacing: scriptSpacing(context, 4)))
                 : result == null
                     ? Text('　',
                         key: const ValueKey('idle'),
@@ -285,7 +286,7 @@ class _ResultLabel extends StatelessWidget {
             style: theme.textTheme.headlineSmall?.copyWith(
               color: color,
               fontWeight: FontWeight.w700,
-              letterSpacing: 4,
+              letterSpacing: scriptSpacing(context, 4),
             )),
         const SizedBox(height: 6),
         Text(_jiaoMessage(l10n, result),

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_theme.dart';
 import '../../data/models/lot.dart';
 import '../../data/models/lot_set.dart';
 import '../../l10n/app_localizations.dart';
@@ -224,7 +225,7 @@ class _RevealCard extends StatelessWidget {
             children: [
               Text(l10n.youDrew,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    letterSpacing: 4,
+                    letterSpacing: scriptSpacing(context, 4),
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   )),
               const SizedBox(height: 8),
