@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required to reach the Gemini API. Flutter only adds this to the
+         debug manifest, so without it release builds have no network. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:label="mindlot萬通解籤"
+        android:label="萬通解籤"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
